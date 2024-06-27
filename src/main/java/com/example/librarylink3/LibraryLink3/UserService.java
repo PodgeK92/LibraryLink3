@@ -17,6 +17,10 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public long countUsers() {
+        return userRepository.count();
+    }
+
     public boolean validateUser(String username, String password) {
         User user = userRepository.findById(username).orElse(null);
         return user != null && user.getPassword().equals(password);

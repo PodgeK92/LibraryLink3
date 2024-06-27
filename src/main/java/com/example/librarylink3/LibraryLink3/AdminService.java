@@ -17,6 +17,10 @@ public class AdminService {
         adminRepository.save(admin);
     }
 
+    public long countAdmins() {
+        return adminRepository.count();
+    }
+
     public boolean validateAdmin(String username, String password) {
         Admin admin = adminRepository.findById(username).orElse(null);
         return admin != null && admin.getPassword().equals(password);

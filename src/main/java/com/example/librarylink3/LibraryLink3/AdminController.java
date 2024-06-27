@@ -3,13 +3,25 @@ package com.example.librarylink3.LibraryLink3;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 public class AdminController {
 
     @Autowired
     private AdminService adminService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private BookService bookService;
 
     @GetMapping("/admin/login")
     public String showAdminLoginForm() {
@@ -28,7 +40,15 @@ public class AdminController {
     }
 
     @GetMapping("/admin/dashboard")
-    public String showAdminDashboard() {
+    public String showAdminDashboard(Model model) {
+        long availableBooksCount = bookService.countBooksAvailable();
+        long totalMembersCount = userService.countUsers();
+        long totalAdminsCount = adminService.countAdmins();
+
+        model.addAttribute("availableBooksCount", availableBooksCount);
+        model.addAttribute("totalMembersCount", totalMembersCount);
+        model.addAttribute("totalAdminsCount", totalAdminsCount);
+
         return "admin_dashboard";
     }
 
@@ -45,4 +65,29 @@ public class AdminController {
         adminService.save(admin);
         return "redirect:/admin/dashboard";
     }
+
+    @GetMapping("/countAdmins")
+    public Map<String, Long> countAdmins() {
+        long count = adminService.countAdmins();
+        Map<String, Long> response = new HashMap<>();
+        response.put("count", count);
+        return response;
+    }
+
+    @GetMapping("/countUsers")
+    public Map<String, Long> countUsers() {
+        long count = userService.countUsers();
+        Map<String, Long> response = new HashMap<>();
+        response.put("count", count);
+        return response;
+    }
+
+    @GetMapping("/countBooksAvailable")
+    public Map<String, Long> countBooksAvailable() {
+        long count = bookService.countBooksAvailable();
+        Map<String, Long> response = new HashMap<>();
+        response.put("count", count);
+        return response;
+    }
+
 }
