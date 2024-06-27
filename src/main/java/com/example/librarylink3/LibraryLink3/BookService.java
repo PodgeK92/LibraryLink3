@@ -30,6 +30,11 @@ public class BookService {
     public Book addBook(Book book) {
         return bookRepository.save(book);
     }
+
+    public long countBooksAvailable() {
+        return bookRepository.countByStatus("AVAILABLE");
+    }
+
     @Transactional
     public void deleteBook(String isbn) {
         System.out.println("Attempting to delete book with ISBN: " + isbn); // Debugging line

@@ -15,6 +15,7 @@ public class Book {
     private int yearPublished;
     private String genre;
     private String format;
+    private String status;
 
     // No-argument constructor
     public Book() {
@@ -89,5 +90,13 @@ public class Book {
                 ", genre='" + genre + '\'' +
                 ", format='" + format + '\'' +
                 '}';
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

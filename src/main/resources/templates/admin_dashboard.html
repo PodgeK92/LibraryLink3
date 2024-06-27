@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -46,18 +46,9 @@
       <div class="card text-white bg-success mb-3">
         <div class="card-header">Books Available</div>
         <div class="card-body">
-          <h5 class="card-title" id="booksAvailable">0</h5>
+          <h5 class="card-title" th:text="${availableBooksCount}"></h5>
           <p class="card-text">Total books currently available for lending.</p>
-          <a href="/inventory" class="btn btn-light">View Inventory</a>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card text-white bg-danger mb-3">
-        <div class="card-header">Books Overdue</div>
-        <div class="card-body">
-          <h5 class="card-title">25</h5>
-          <p class="card-text">Books not returned by the due date.</p>
+          <a href="/admin/inventory" class="btn btn-light">View Inventory</a>
         </div>
       </div>
     </div>
@@ -65,19 +56,16 @@
       <div class="card text-white bg-info mb-3">
         <div class="card-header">Total Members</div>
         <div class="card-body">
-          <h5 class="card-title" id="totalMembers">0</h5>
+          <h5 class="card-title" th:text="${totalMembersCount}"></h5>
           <p class="card-text">Members registered with the library.</p>
         </div>
       </div>
     </div>
-  </div>
-
-  <div class="row">
     <div class="col-md-4">
       <div class="card text-white bg-primary mb-3">
         <div class="card-header">Admins</div>
         <div class="card-body">
-          <h5 class="card-title" id="adminCount">0</h5>
+          <h5 class="card-title" th:text="${totalAdminsCount}"></h5>
           <p class="card-text">Total number of admins.</p>
           <a href="/admin/create" class="btn btn-light">Create Admin</a>
         </div>
@@ -87,7 +75,7 @@
       <div class="card text-white bg-secondary mb-3">
         <div class="card-header">Users</div>
         <div class="card-body">
-          <h5 class="card-title" id="userCount">0</h5>
+          <h5 class="card-title" th:text="${totalMembersCount}"></h5>
           <p class="card-text">Total number of users.</p>
           <a href="/admin/users" class="btn btn-light">Manage Users</a>
         </div>
@@ -104,20 +92,6 @@
     // Implement sign out logic here
     console.log('Sign out logic to be implemented.');
   }
-
-  document.addEventListener('DOMContentLoaded', function() {
-    fetch('/admin/countAdmins')
-      .then(response => response.json())
-      .then(data => document.getElementById('adminCount').innerText = data.count);
-
-    fetch('/admin/countUsers')
-      .then(response => response.json())
-      .then(data => document.getElementById('userCount').innerText = data.count);
-
-    fetch('/admin/countBooksAvailable')
-      .then(response => response.json())
-      .then(data => document.getElementById('booksAvailable').innerText = data.count);
-  });
 </script>
 </body>
 </html>
