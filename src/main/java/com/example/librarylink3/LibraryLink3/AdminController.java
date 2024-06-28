@@ -1,6 +1,8 @@
 package com.example.librarylink3.LibraryLink3;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -64,6 +66,14 @@ public class AdminController {
         admin.setEnabled(true);
         adminService.save(admin);
         return "redirect:/admin/dashboard";
+    }
+
+    @GetMapping("/admin/inventory")
+    public String showInventory(Model model, @RequestParam(defaultValue = "0") int page) {
+        Page<Book> bookPage = bookService.getBooksPage(PageRequest.of(page, 5));
+        model.addAttribute("bookPage", bookPage);
+        model.addAttribute("currentPage", page);
+        return "inventory";
     }
 
     @GetMapping("/countAdmins")

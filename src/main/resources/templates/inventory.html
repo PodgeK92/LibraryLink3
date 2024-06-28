@@ -60,7 +60,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="book : ${books}">
+    <tr th:each="book : ${bookPage.content}">
       <td th:text="${book.isbn}"></td>
       <td th:text="${book.title}"></td>
       <td th:text="${book.author}"></td>
@@ -75,23 +75,27 @@
     </tbody>
   </table>
 
-  <nav aria-label="Page navigation">
-    <ul class="pagination">
-      <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-        <a class="page-link" th:href="@{/books/inventory(page=${currentPage - 1})}" aria-label="Previous">
-          <span aria-hidden="true">&laquo;</span>
-        </a>
-      </li>
-      <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">
-        <a class="page-link" th:href="@{/books/inventory(page=${i})}" th:text="${i + 1}">1</a>
-      </li>
-      <li class="page-item" th:classappend="${currentPage + 1 == totalPages} ? 'disabled'">
-        <a class="page-link" th:href="@{/books/inventory(page=${currentPage + 1})}" aria-label="Next">
-          <span aria-hidden="true">&raquo;</span>
-        </a>
-      </li>
-    </ul>
-  </nav>
+  <div class="row">
+    <div class="col-md-12">
+      <nav aria-label="Page navigation">
+        <ul class="pagination">
+          <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+            <a class="page-link" th:href="@{/admin/inventory(page=${currentPage - 1})}" aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+          <li class="page-item" th:each="i : ${#numbers.sequence(0, bookPage.totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">
+            <a class="page-link" th:href="@{/admin/inventory(page=${i})}" th:text="${i + 1}">1</a>
+          </li>
+          <li class="page-item" th:classappend="${currentPage + 1 == bookPage.totalPages} ? 'disabled'">
+            <a class="page-link" th:href="@{/admin/inventory(page=${currentPage + 1})}" aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
 </div>
 
 <!-- Add Book Modal -->
