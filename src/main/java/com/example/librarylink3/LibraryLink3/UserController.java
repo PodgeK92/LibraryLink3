@@ -53,4 +53,14 @@ public class UserController {
             return "login";
         }
     }
+
+    @GetMapping("/user/book_search")
+    public String showBookSearchForm() {
+        return "book_search";
+    }
+
+    @GetMapping("/user/book_search_results")
+    public String showBookSearchResults() {
+        return "book_search_results";
+    }
 }
