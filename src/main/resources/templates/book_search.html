@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Meta tags ensure proper rendering and touch zooming -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Title of the webpage -->
+  <title>LibraryLink - Books</title>
+  <!-- Link to Bootstrap CSS for responsive styling -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<!-- Navigation bar section using Bootstrap components -->
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+  <a class="navbar-brand" href="#">LibraryLink</a>
+  <!-- Toggler/collapsible button for smaller screens -->
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <!-- Navbar links that collapse into the toggler on small screens -->
+  <div class="collapse navbar-collapse" id="navbarCollapse">
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="home.html">Home</a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="book_search.html">Books</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="members_login.html">Members</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<!-- Main content area -->
+<main role="main" class="container mt-5 pt-5"> <!-- Additional margin and padding to account for the fixed navbar -->
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <!-- Card header containing the title of the form -->
+        <div class="card-header">
+          Search Books
+        </div>
+        <!-- Body of the card containing the search form -->
+        <div class="card-body">
+          <!-- Form that submits a GET request to book_search_results.html with search parameters -->
+          <form action="/user/book_search_results" method="GET">
+          <!-- Responsive form layout using Bootstrap grid system -->
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="bookNameInput">Book Name</label>
+                <input type="text" class="form-control" name="bookName" id="bookNameInput" placeholder="Enter book name">
+              </div>
+              <div class="form-group col-md-6">
+                <label for="authorInput">Author</label>
+                <input type="text" class="form-control" name="author" id="authorInput" placeholder="Enter author name">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="isbnInput">ISBN</label>
+                <input type="text" class="form-control" name="isbn" id="isbnInput" placeholder="Enter ISBN">
+              </div>
+              <div class="form-group col-md-4">
+                <label for="publisherInput">Publisher</label>
+                <input type="text" class="form-control" name="publisher" id="publisherInput" placeholder="Enter publisher">
+              </div>
+              <div class="form-group col-md-4">
+                <label for="formatInput">Format</label>
+                <select class="form-control" name="format" id="formatInput">
+                  <option value="">Select format</option>
+                  <option value="Hardcover">Hardcover</option>
+                  <option value="Paperback">Paperback</option>
+                  <option value="Ebook">Ebook</option>
+                  <option value="Audiobook">Audiobook</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="genreInput">Genre</label>
+                <input type="text" class="form-control" name="genre" id="genreInput" placeholder="Enter genre">
+              </div>
+              <div class="form-group col-md-6">
+                <label for="yearPublishedInput">Year Published</label>
+                <input type="text" class="form-control" name="yearPublished" id="yearPublishedInput" placeholder="Enter year">
+              </div>
+            </div>
+            <!-- Button to submit the form -->
+            <button type="submit" class="btn btn-primary">Search</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Scripts required for Bootstrap's JavaScript features such as the collapsible navbar -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
