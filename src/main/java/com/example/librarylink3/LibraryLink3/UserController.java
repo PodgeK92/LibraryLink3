@@ -55,12 +55,25 @@ public class UserController {
     }
 
     @GetMapping("/user/book_search")
-    public String showBookSearchForm() {
+    public String showBookSearchPage() {
         return "book_search";
     }
 
     @GetMapping("/user/book_search_results")
-    public String showBookSearchResults() {
+    public String showBookSearchResults(@RequestParam String bookName, @RequestParam String author,
+                                        @RequestParam String isbn, @RequestParam String publisher,
+                                        @RequestParam String format, @RequestParam String genre,
+                                        @RequestParam String yearPublished, @RequestParam(defaultValue = "0") int page,
+                                        Model model) {
+        model.addAttribute("bookName", bookName);
+        model.addAttribute("author", author);
+        model.addAttribute("isbn", isbn);
+        model.addAttribute("publisher", publisher);
+        model.addAttribute("format", format);
+        model.addAttribute("genre", genre);
+        model.addAttribute("yearPublished", yearPublished);
+        model.addAttribute("page", page);
         return "book_search_results";
     }
+
 }
