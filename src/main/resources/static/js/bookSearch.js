@@ -1,52 +1,3 @@
-function addPaginationControls(totalItems, currentPage) {
-    const paginationContainer = document.querySelector('#pagination-controls .pagination');
-    const itemsPerPage = 10;
-    const totalPages = Math.ceil(totalItems / itemsPerPage);
-    const maxPagesToShow = 5; // Limit the number of pages to show at once
-
-    paginationContainer.innerHTML = '';
-
-    const createPageItem = (page, text = page) => {
-        const li = document.createElement('li');
-        li.classList.add('page-item');
-        if (page === currentPage) li.classList.add('active');
-
-        const a = document.createElement('a');
-        a.classList.add('page-link');
-
-        const params = new URLSearchParams(window.location.search);
-        params.set('page', page);
-        a.href = `?${params.toString()}`;
-        a.textContent = text;
-
-        li.appendChild(a);
-        return li;
-    };
-
-    // First page button
-    if (currentPage > 1) {
-        paginationContainer.appendChild(createPageItem(1, '«'));
-    }
-
-    // Single backward button
-    if (currentPage > 1) {
-        paginationContainer.appendChild(createPageItem(currentPage - 1, '‹'));
-    }
-
-    const startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
-    const endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
-
-    for (let i = startPage; i <= endPage; i++) {
-        paginationContainer.appendChild(createPageItem(i));
-    }
-
-    // Single forward button
-    if (currentPage < totalPages) {
-        paginationContainer.appendChild(createPageItem(currentPage + 1, '›'));
-    }
-
-}
-
 document.addEventListener('DOMContentLoaded', function () {
     const resultsContainer = document.querySelector('#search-results');
     const paginationControls = document.querySelector('#pagination-controls .pagination');
@@ -66,12 +17,9 @@ document.addEventListener('DOMContentLoaded', function () {
         const maxResults = 10;
         queryString += `&startIndex=${(page - 1) * maxResults}&maxResults=${maxResults}`;
 
-        console.log('Query String:', queryString); // Debugging line
-
         fetch(queryString)
             .then(response => response.json())
             .then(data => {
-            console.log('API Response:', data); // Debugging line
             resultsContainer.innerHTML = '';
             if (!data.items) {
                 resultsContainer.innerHTML = '<div class="list-group-item">No results found.</div>';
@@ -83,17 +31,21 @@ document.addEventListener('DOMContentLoaded', function () {
                 const authors = volumeInfo.authors ? volumeInfo.authors.join(', ') : 'Unknown author';
                 const description = volumeInfo.description || 'No description available.';
                 const coverUrl = volumeInfo.imageLinks ? volumeInfo.imageLinks.thumbnail : 'no-cover-image.jpg';
+                const isbns = volumeInfo.industryIdentifiers ? volumeInfo.industryIdentifiers.map(id => id.identifier).join(', ') : 'ISBN not available';
+
+                // Use only the first ISBN for generating the ID to avoid duplication issues
+                const primaryIsbn = volumeInfo.industryIdentifiers ? volumeInfo.industryIdentifiers[0].identifier.replace(/[^a-zA-Z0-9]/g, '') : 'ISBNnotavailable';
 
                 const bookItemHTML = `
                         <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
                             <div class="d-flex w-100 justify-content-between">
                                 <h5 class="mb-1">${title}</h5>
-                                <small>Availability: Available</small>
+                                <small class="availability" id="isbn-${primaryIsbn}">Availability: Unavailable</small>
                             </div>
                             <p class="mb-1">Author: ${authors}</p>
                             <p class="mb-1">Genre: ${volumeInfo.categories ? volumeInfo.categories.join(', ') : 'Genre not available'}</p>
                             <p class="mb-1">Year Published: ${volumeInfo.publishedDate || 'Year not available'}</p>
-                            <small>ISBN: ${volumeInfo.industryIdentifiers ? volumeInfo.industryIdentifiers.map(id => id.identifier).join(', ') : 'ISBN not available'}</small>
+                            <small>ISBN: ${isbns}</small>
                             <img src="${coverUrl}" alt="Cover image" class="img-fluid">
                             <div class="collapse mt-3" id="collapseDescription${index}">
                                 <p>Description: ${description}</p>
@@ -102,6 +54,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         </a>
                     `;
                 resultsContainer.innerHTML += bookItemHTML;
+
+                // Check availability for each ISBN
+                isbns.split(', ').forEach(isbn => checkBookAvailability(isbn, primaryIsbn));
             });
 
             // Add pagination controls
@@ -111,6 +66,69 @@ document.addEventListener('DOMContentLoaded', function () {
             console.error('Error fetching data:', error);
             resultsContainer.innerHTML = '<div class="list-group-item">Failed to retrieve data. Please check your network connection and try again.</div>';
         });
+    };
+
+    const checkBookAvailability = (isbn, primaryIsbn) => {
+        const sanitizedIsbn = isbn.replace(/[^a-zA-Z0-9]/g, '');
+        fetch(`/api/googlebooks/checkAvailability?isbn=${sanitizedIsbn}`)
+            .then(response => response.json())
+            .then(isAvailable => {
+            if (isAvailable) {
+                const availabilityElement = document.querySelector(`#isbn-${primaryIsbn}`);
+                if (availabilityElement) {
+                    availabilityElement.textContent = 'Availability: Available';
+                }
+            }
+        })
+            .catch(error => console.error('Error checking availability:', error));
+    };
+
+    const addPaginationControls = (totalItems, currentPage) => {
+        const paginationContainer = document.querySelector('#pagination-controls .pagination');
+        const itemsPerPage = 10;
+        const totalPages = Math.ceil(totalItems / itemsPerPage);
+        const maxPagesToShow = 5;
+
+        paginationContainer.innerHTML = '';
+
+        const createPageItem = (page, text = page) => {
+            const li = document.createElement('li');
+            li.classList.add('page-item');
+            if (page === currentPage) li.classList.add('active');
+
+            const a = document.createElement('a');
+            a.classList.add('page-link');
+
+            const params = new URLSearchParams(window.location.search);
+            params.set('page', page);
+            a.href = `?${params.toString()}`;
+            a.textContent = text;
+
+            li.appendChild(a);
+            return li;
+        };
+
+        // First page button
+        if (currentPage > 1) {
+            paginationContainer.appendChild(createPageItem(1, '«'));
+        }
+
+        // Single backward button
+        if (currentPage > 1) {
+            paginationContainer.appendChild(createPageItem(currentPage - 1, '‹'));
+        }
+
+        const startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+        const endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+
+        for (let i = startPage; i <= endPage; i++) {
+            paginationContainer.appendChild(createPageItem(i));
+        }
+
+        // Single forward button
+        if (currentPage < totalPages) {
+            paginationContainer.appendChild(createPageItem(currentPage + 1, '›'));
+        }
     };
 
     fetchBooks();

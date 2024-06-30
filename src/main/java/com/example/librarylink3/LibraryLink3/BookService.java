@@ -46,4 +46,8 @@ public class BookService {
         return bookRepository.save(book);
     }
 
+    public boolean checkBookAvailability(String isbn) {
+        return bookRepository.existsById(isbn);
+    }
+
 }
