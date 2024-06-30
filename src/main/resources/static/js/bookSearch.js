@@ -79,7 +79,10 @@ function addPaginationControls(totalItems, currentPage) {
 
         const a = document.createElement('a');
         a.classList.add('page-link');
-        a.href = `?page=${page}`;
+
+        const params = new URLSearchParams(window.location.search);
+        params.set('page', page);
+        a.href = `?${params.toString()}`;
         a.textContent = text;
 
         li.appendChild(a);
