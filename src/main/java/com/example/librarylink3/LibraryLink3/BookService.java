@@ -46,4 +46,11 @@ public class BookService {
         return bookRepository.save(book);
     }
 
+    public boolean checkBookAvailability(String isbn) {
+        boolean isAvailable = bookRepository.existsById(isbn);
+        System.out.println("Checking availability for ISBN: " + isbn + " - Available: " + isAvailable);
+        return isAvailable;
+    }
+
+
 }
