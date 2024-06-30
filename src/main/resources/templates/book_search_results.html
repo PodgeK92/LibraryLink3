@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <!-- Meta tags for character set and responsive behavior -->
   <meta charset="UTF-8">
@@ -39,6 +39,12 @@
       <div class="list-group" id="search-results">
         <!-- Dynamic search results will be appended here by JavaScript -->
       </div>
+      <!-- Pagination controls -->
+      <nav aria-label="Page navigation" id="pagination-controls">
+        <ul class="pagination justify-content-center">
+          <!-- Pagination items will be dynamically added here -->
+        </ul>
+      </nav>
     </div>
   </div>
 </main>
@@ -47,64 +53,7 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script>
-  // JavaScript that runs after the document content has fully loaded
-  document.addEventListener('DOMContentLoaded', function () {
-    const resultsContainer = document.querySelector('#search-results'); // Selects the container to display search results
-    const params = new URLSearchParams(window.location.search); // Parses the query parameters from the URL
-
-    // Builds the query string for the Google Books API based on parameters received
-    let queryString = 'https://www.googleapis.com/books/v1/volumes?q=';
-    queryString += params.get('bookName') ? `intitle:${encodeURIComponent(params.get('bookName'))}` : '';
-    queryString += params.get('author') ? `+inauthor:${encodeURIComponent(params.get('author'))}` : '';
-    queryString += params.get('isbn') ? `+isbn:${encodeURIComponent(params.get('isbn'))}` : '';
-    queryString += params.get('publisher') ? `+inpublisher:${encodeURIComponent(params.get('publisher'))}` : '';
-    queryString += params.get('format') ? `+subject:${encodeURIComponent(params.get('format'))}` : '';
-    queryString += params.get('genre') ? `+subject:${encodeURIComponent(params.get('genre'))}` : '';
-    queryString += params.get('yearPublished') ? `+inpublisherDate:${encodeURIComponent(params.get('yearPublished'))}` : '';
-
-    // Fetches data from the API and handles the response
-    fetch(queryString)
-      .then(response => response.json())
-      .then(data => {
-      resultsContainer.innerHTML = ''; // Clears previous results
-      if (!data.items) {
-        resultsContainer.innerHTML = '<div class="list-group-item">No results found.</div>';
-        return;
-      }
-      // Processes each item in the response and creates HTML elements to display book information
-      data.items.forEach((item, index) => {
-        const volumeInfo = item.volumeInfo;
-        const title = volumeInfo.title;
-        const authors = volumeInfo.authors ? volumeInfo.authors.join(', ') : 'Unknown author';
-        const description = volumeInfo.description || 'No description available.';
-        const coverUrl = volumeInfo.imageLinks ? volumeInfo.imageLinks.thumbnail : 'no-cover-image.jpg';
-
-        const bookItemHTML = `
-            <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-              <div class="d-flex w-100 justify-content-between">
-                <h5 class="mb-1">${title}</h5>
-                <small>Availability: Available</small>
-              </div>
-              <p class="mb-1">Author: ${authors}</p>
-              <p class="mb-1">Genre: ${volumeInfo.categories ? volumeInfo.categories.join(', ') : 'Genre not available'}</p>
-              <p class="mb-1">Year Published: ${volumeInfo.publishedDate || 'Year not available'}</p>
-              <small>ISBN: ${volumeInfo.industryIdentifiers ? volumeInfo.industryIdentifiers.map(id => id.identifier).join(', ') : 'ISBN not available'}</small>
-              <img src="${coverUrl}" alt="Cover image" class="img-fluid">
-              <div class="collapse mt-3" id="collapseDescription${index}">
-                <p>Description: ${description}</p>
-              </div>
-              <a class="btn btn-sm btn-outline-primary" data-toggle="collapse" href="#collapseDescription${index}" role="button" aria-expanded="false" aria-controls="collapseDescription${index}">Read More</a>
-            </a>
-          `;
-        resultsContainer.innerHTML += bookItemHTML; // Appends the created HTML to the results container
-      });
-    })
-      .catch(error => {
-      console.error('Error fetching data:', error); // Logs any errors to the console
-      resultsContainer.innerHTML = '<div class="list-group-item">Failed to retrieve data. Please check your network connection and try again.</div>';
-    });
-  });
-</script>
+<!-- Include the external JavaScript file -->
+<script src="/js/bookSearch.js"></script>
 </body>
 </html>
