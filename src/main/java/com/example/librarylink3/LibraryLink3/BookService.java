@@ -46,4 +46,11 @@ public class BookService {
         return bookRepository.save(book);
     }
 
+    public boolean checkBookAvailability(String isbn) {
+        // Remove hyphens and check for the ISBN
+        String sanitizedIsbn = isbn.replace("-", "");
+        return bookRepository.existsById(sanitizedIsbn);
+    }
+
+
 }

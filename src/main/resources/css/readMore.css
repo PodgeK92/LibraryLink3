@@ -1,0 +1,9 @@
+.list-group-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.list-group-item .btn-outline-primary {
+    align-self: center;
+}
