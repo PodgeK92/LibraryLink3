@@ -1,70 +1,80 @@
 package com.example.librarylink3.LibraryLink3;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import java.time.LocalDate;
+
 @Entity
-@Table(name = "users")
+@Table(name = "LibraryUser")
 public class User {
     @Id
-    private String username;
-    private String email;
-    private String password;
-    private String firstName;
-    private String lastName;
-    private String phone;
-    private String address;
-    private String city;
-    private String county;
-    private String postcode;
-    private String role;
-    private boolean enabled;
+    @Column(name = "card_number_id")
+    private String cardNumberId;
 
-    // Default constructor
+    @Column(name = "first_name")
+    private String firstName;
+
+    @Column(name = "last_name")
+    private String lastName;
+
+    @Column(name = "street_name")
+    private String streetName;
+
+    @Column(name = "town_city")
+    private String townCity;
+
+    @Column(name = "county")
+    private String county;
+
+    @Column(name = "dob")
+    private LocalDate dob;
+
+    @Column(name = "home_branch")
+    private String homeBranch;
+
+    @Column(name = "material_quantity")
+    private int materialQuantity = 0;  // Default value
+
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "phone_number")
+    private String phoneNumber;
+
+    @Column(name = "password")
+    private String password;
+
+    // No-argument constructor
     public User() {
     }
 
     // Parameterized constructor
-    public User(String username, String email, String password, String firstName, String lastName,
-                String phone, String address, String city, String county, String postcode,
-                String role, boolean enabled) {
-        this.username = username;
-        this.email = email;
-        this.password = password;
+    public User(String cardNumberId, String firstName, String lastName, String streetName, String townCity, String county, LocalDate dob, String homeBranch, int materialQuantity, String email, String phoneNumber, String password) {
+        this.cardNumberId = cardNumberId;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.phone = phone;
-        this.address = address;
-        this.city = city;
+        this.streetName = streetName;
+        this.townCity = townCity;
         this.county = county;
-        this.postcode = postcode;
-        this.role = role;
-        this.enabled = enabled;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
+        this.dob = dob;
+        this.homeBranch = homeBranch;
+        this.materialQuantity = materialQuantity;
         this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
+        this.phoneNumber = phoneNumber;
         this.password = password;
+    }
+
+    // Getters and setters
+
+    public String getCardNumberId() {
+        return cardNumberId;
+    }
+
+    public void setCardNumberId(String cardNumberId) {
+        this.cardNumberId = cardNumberId;
     }
 
     public String getFirstName() {
@@ -83,28 +93,20 @@ public class User {
         this.lastName = lastName;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getStreetName() {
+        return streetName;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setStreetName(String streetName) {
+        this.streetName = streetName;
     }
 
-    public String getAddress() {
-        return address;
+    public String getTownCity() {
+        return townCity;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
+    public void setTownCity(String townCity) {
+        this.townCity = townCity;
     }
 
     public String getCounty() {
@@ -115,27 +117,57 @@ public class User {
         this.county = county;
     }
 
-    public String getPostcode() {
-        return postcode;
+    public LocalDate getDob() {
+        return dob;
     }
 
-    public void setPostcode(String postcode) {
-        this.postcode = postcode;
+    public void setDob(LocalDate dob) {
+        this.dob = dob;
     }
 
-    public String getRole() {
-        return role;
+    public String getHomeBranch() {
+        return homeBranch;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setHomeBranch(String homeBranch) {
+        this.homeBranch = homeBranch;
     }
 
-    public boolean isEnabled() {
-        return enabled;
+    public int getMaterialQuantity() {
+        return materialQuantity;
     }
 
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+    public void setMaterialQuantity(int materialQuantity) {
+        this.materialQuantity = materialQuantity;
     }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    // Method to get the full address as a single string
+    public String getAddress() {
+        return streetName + ", " + townCity + ", " + county;
+    }
+
 }
