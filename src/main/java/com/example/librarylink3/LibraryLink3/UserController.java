@@ -47,7 +47,7 @@ public class UserController {
     public String loginUser(@RequestParam String username, @RequestParam String password, Model model) {
         if (userService.validateUser(username, password)) {
             model.addAttribute("username", username);
-            return "redirect:/inventory";
+            return "redirect:/user/dashboard";
         } else {
             model.addAttribute("error", "Invalid username or password");
             return "login";
