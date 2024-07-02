@@ -38,12 +38,12 @@ public class UserController {
     }
 
 
-    @GetMapping("/login")
+    @GetMapping("/user/login")
     public String showLoginForm() {
         return "login";
     }
 
-    @PostMapping("/login")
+    @PostMapping("/user/login")
     public String loginUser(@RequestParam String username, @RequestParam String password, Model model) {
         if (userService.validateUser(username, password)) {
             model.addAttribute("username", username);
