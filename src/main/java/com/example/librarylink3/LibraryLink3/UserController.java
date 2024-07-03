@@ -45,12 +45,12 @@ public class UserController {
     }
 
     @PostMapping("/user/login")
-    public String loginUser(@RequestParam String username, @RequestParam String password, Model model) {
-        if (userService.validateUser(username, password)) {
-            model.addAttribute("username", username);
+    public String loginUser(@RequestParam String cardNumberId, @RequestParam String password, Model model) {
+        if (userService.validateUser(cardNumberId, password)) {
+            model.addAttribute("cardNumberId", cardNumberId);
             return "redirect:/user/dashboard";
         } else {
-            model.addAttribute("error", "Invalid username or password");
+            model.addAttribute("error", "Invalid card number or password");
             return "login";
         }
     }
