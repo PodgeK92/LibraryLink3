@@ -11,8 +11,8 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public User findByUsername(String username) {
-        return userRepository.findById(username).orElse(null);
+    public User findByCardNumberId(String cardNumberId) {
+        return userRepository.findById(cardNumberId).orElse(null);
     }
 
     public void save(User user) {
@@ -23,8 +23,8 @@ public class UserService {
         return userRepository.count();
     }
 
-    public boolean validateUser(String username, String password) {
-        User user = userRepository.findById(username).orElse(null);
+    public boolean validateUser(String cardNumberId, String password) {
+        User user = userRepository.findById(cardNumberId).orElse(null);
         return user != null && user.getPassword().equals(password);
     }
 
