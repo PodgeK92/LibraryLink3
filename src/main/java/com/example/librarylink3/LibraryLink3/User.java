@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Table(name = "LibraryUser")
 public class User {
     @Id
-    @Column(name = "card_number_id")
+    @Column(name = "card_number_id", nullable = false, unique = true)  // Ensure the primary key is correctly defined
     private String cardNumberId;
 
     @Column(name = "first_name")
