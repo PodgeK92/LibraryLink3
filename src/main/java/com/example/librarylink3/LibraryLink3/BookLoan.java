@@ -6,19 +6,16 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "book_loans")
 public class BookLoan {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "book_loan_id")
-    private Integer bookLoanId;
+    private int bookLoanId;
 
-    @ManyToOne
-    @JoinColumn(name = "isbn", referencedColumnName = "isbn")
-    private Book book;
+    @Column(name = "isbn", length = 17)
+    private String isbn;
 
-    @ManyToOne
-    @JoinColumn(name = "card_number_id", referencedColumnName = "card_number_id")
-    private User user;
+    @Column(name = "card_number_id")
+    private String cardNumberId;
 
     @Column(name = "loan_date")
     private LocalDate loanDate;
@@ -27,32 +24,32 @@ public class BookLoan {
     private LocalDate returnDate;
 
     @Column(name = "renewals_number")
-    private int renewalsNumber;
+    private int renewalsNumber = 0;  // Default value
 
-    // Getters and Setters
+    // Getters and setters
 
-    public Integer getBookLoanId() {
+    public int getBookLoanId() {
         return bookLoanId;
     }
 
-    public void setBookLoanId(Integer bookLoanId) {
+    public void setBookLoanId(int bookLoanId) {
         this.bookLoanId = bookLoanId;
     }
 
-    public Book getBook() {
-        return book;
+    public String getIsbn() {
+        return isbn;
     }
 
-    public void setBook(Book book) {
-        this.book = book;
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
     }
 
-    public User getUser() {
-        return user;
+    public String getCardNumberId() {
+        return cardNumberId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setCardNumberId(String cardNumberId) {
+        this.cardNumberId = cardNumberId;
     }
 
     public LocalDate getLoanDate() {
@@ -79,3 +76,4 @@ public class BookLoan {
         this.renewalsNumber = renewalsNumber;
     }
 }
+

@@ -6,7 +6,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 public class BookLoanController {
@@ -20,12 +24,31 @@ public class BookLoanController {
     }
 
     @PostMapping("/admin/checkout_book")
-    public ResponseEntity<?> checkoutBook(@RequestBody BookLoanRequest bookLoanRequest) {
+    @ResponseBody
+    public ResponseEntity<Map<String, String>> checkoutBook(
+            @RequestParam("isbn") String isbn,
+            @RequestParam("cardNumberId") String cardNumberId) {
+
+        boolean isBookAvailable = bookLoanService.isBookAvailable(isbn);
+
+        if (!isBookAvailable) {
+            Map<String, String> response = new HashMap<>();
+            response.put("success", "false");
+            response.put("message", "Book is not available.");
+            return ResponseEntity.badRequest().body(response);
+        }
+
         try {
-            bookLoanService.checkoutBook(bookLoanRequest.getIsbn(), bookLoanRequest.getCardNumberId());
-            return ResponseEntity.ok().body(new ApiResponse("Book checked out successfully"));
+            bookLoanService.checkoutBook(isbn, cardNumberId);
+            Map<String, String> response = new HashMap<>();
+            response.put("success", "true");
+            response.put("message", "Book checked out successfully.");
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new ApiResponse(e.getMessage()));
+            Map<String, String> response = new HashMap<>();
+            response.put("success", "false");
+            response.put("message", "Failed to check out book: " + e.getMessage());
+            return ResponseEntity.badRequest().body(response);
         }
     }
 
@@ -49,8 +72,6 @@ public class BookLoanController {
         public void setCardNumberId(String cardNumberId) {
             this.cardNumberId = cardNumberId;
         }
-
-
     }
 
     public static class ApiResponse {
@@ -67,7 +88,5 @@ public class BookLoanController {
         public void setMessage(String message) {
             this.message = message;
         }
-
-
     }
 }

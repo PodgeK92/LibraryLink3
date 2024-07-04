@@ -1,5 +1,6 @@
 package com.example.librarylink3.LibraryLink3;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -7,6 +8,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class BookLoanService {
 
     @Autowired
@@ -18,30 +20,30 @@ public class BookLoanService {
     @Autowired
     private BookRepository bookRepository;
 
-    public void checkoutBook(String isbn, String cardNumberId) throws Exception {
-        // Validate user and book existence
-        Optional<User> userOpt = userRepository.findById(cardNumberId);
-        Optional<Book> bookOpt = bookRepository.findById(isbn);
+    public boolean isBookAvailable(String isbn) {
+        return bookRepository.existsByIsbnAndStatus(isbn, "Available");
+    }
 
-        if (!userOpt.isPresent()) {
-            throw new Exception("User not found");
-        }
-
-        if (!bookOpt.isPresent()) {
-            throw new Exception("Book not found");
-        }
-
-        User user = userOpt.get();
-        Book book = bookOpt.get();
-
-        // Create and save the book loan
+    @Transactional
+    public void checkoutBook(String isbn, String cardNumberId) {
+        // Create a new BookLoan
         BookLoan bookLoan = new BookLoan();
-        bookLoan.setBook(book);
-        bookLoan.setUser(user);
+        bookLoan.setIsbn(isbn);
+        bookLoan.setCardNumberId(cardNumberId);
         bookLoan.setLoanDate(LocalDate.now());
-        bookLoan.setReturnDate(LocalDate.now().plusWeeks(2)); // Example: 2-week loan period
-        bookLoan.setRenewalsNumber(0);
 
         bookLoanRepository.save(bookLoan);
+
+        // Update book status to "Unavailable"
+        Optional<Book> bookOptional = bookRepository.findByIsbn(isbn);
+        if (bookOptional.isPresent()) {
+            Book book = bookOptional.get();
+            book.setStatus("Unavailable");
+            bookRepository.save(book);
+        } else {
+            // Handle the case where the book is not found
+            throw new RuntimeException("Book not found with ISBN: " + isbn);
+        }
+
     }
 }
