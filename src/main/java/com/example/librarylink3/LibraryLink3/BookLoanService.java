@@ -2,8 +2,10 @@ package com.example.librarylink3.LibraryLink3;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -34,7 +36,7 @@ public class BookLoanService {
         User user = userOpt.get();
         Book book = bookOpt.get();
 
-        if (!bookRepository.isBookAvailable(isbn)) {
+        if (!"Available".equals(book.getStatus())) {
             throw new Exception("Book is not available");
         }
 
@@ -45,11 +47,32 @@ public class BookLoanService {
         bookLoan.setLoanDate(LocalDate.now());
         bookLoan.setReturnDate(LocalDate.now().plusWeeks(2)); // Example: 2-week loan period
         bookLoan.setRenewalsNumber(0);
+
         bookLoanRepository.save(bookLoan);
 
         // Update book status to "Unavailable"
         book.setStatus("Unavailable");
         bookRepository.save(book);
     }
-}
 
+    public List<BookLoan> getUserLoans(String cardNumberId) {
+        return bookLoanRepository.findByUserCardNumberId(cardNumberId);
+    }
+
+    @Transactional
+    public void returnBook(int bookLoanId) throws Exception {
+        Optional<BookLoan> loanOpt = bookLoanRepository.findById(bookLoanId);
+        if (!loanOpt.isPresent()) {
+            throw new Exception("Loan record not found");
+        }
+
+        BookLoan loan = loanOpt.get();
+        loan.setReturnedOnDate(LocalDate.now());
+        bookLoanRepository.save(loan);
+
+        // Update book status to "Available"
+        Book book = loan.getBook();
+        book.setStatus("Available");
+        bookRepository.save(book);
+    }
+}

@@ -29,6 +29,9 @@ public class BookLoan {
     @Column(name = "renewals_number")
     private int renewalsNumber;
 
+    @Column(name = "returned_on_date")
+    private LocalDate returnedOnDate;
+
     // Getters and Setters
 
     public Integer getBookLoanId() {
@@ -77,5 +80,13 @@ public class BookLoan {
 
     public void setRenewalsNumber(int renewalsNumber) {
         this.renewalsNumber = renewalsNumber;
+    }
+
+    public LocalDate getReturnedOnDate() {
+        return returnedOnDate;
+    }
+
+    public void setReturnedOnDate(LocalDate returnedOnDate) {
+        this.returnedOnDate = returnedOnDate;
     }
 }
