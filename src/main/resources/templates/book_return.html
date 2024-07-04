@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Return Book</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body class="d-flex flex-column min-vh-100">
+<!-- Navigation bar -->
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+  <a class="navbar-brand" href="#">LibraryLink Admin</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarCollapse">
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="/admin/dashboard">Dashboard</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Members</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Inventory</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Loans</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Reports</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#" onclick="signOut();">Sign Out</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<main role="main" class="container mt-5">
+  <div class="jumbotron">
+    <h1>Return Book</h1>
+    <form id="userCardForm">
+      <div class="form-group">
+        <label for="cardNumberId">User Card Number ID</label>
+        <input type="text" class="form-control" id="cardNumberId" name="cardNumberId" placeholder="Enter User Card Number ID" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Search Loans</button>
+    </form>
+
+    <div id="loanList" style="display: none;">
+      <h2>Current Loans</h2>
+      <ul id="loans"></ul>
+    </div>
+  </div>
+</main>
+
+<script>
+  document.getElementById('userCardForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const cardNumberId = document.getElementById('cardNumberId').value;
+    fetch(`/admin/user_loans?cardNumberId=${cardNumberId}`)
+      .then(response => response.json())
+      .then(loans => {
+      const loanList = document.getElementById('loanList');
+      const loansUl = document.getElementById('loans');
+      loansUl.innerHTML = '';
+      loans.forEach(loan => {
+        const li = document.createElement('li');
+        li.textContent = `Book ISBN: ${loan.book.isbn}, Loan Date: ${loan.loanDate}`;
+        const button = document.createElement('button');
+        button.textContent = 'Return Book';
+        button.classList.add('btn', 'btn-secondary', 'ml-2');
+        button.onclick = function() {
+          fetch('/admin/return_book', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ bookLoanId: loan.bookLoanId })
+          })
+            .then(response => response.json())
+            .then(data => {
+            alert(data.message);
+            // Optionally, refresh the loan list
+            document.getElementById('userCardForm').dispatchEvent(new Event('submit'));
+          })
+            .catch(error => {
+            console.error('Error:', error);
+          });
+        };
+        li.appendChild(button);
+        loansUl.appendChild(li);
+      });
+      loanList.style.display = 'block';
+    })
+      .catch(error => {
+      console.error('Error:', error);
+    });
+  });
+
+  function signOut() {
+    // Implement sign out logic here
+    console.log('Sign out logic to be implemented.');
+  }
+</script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
