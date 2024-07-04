@@ -49,8 +49,6 @@ public class BookLoanController {
         public void setCardNumberId(String cardNumberId) {
             this.cardNumberId = cardNumberId;
         }
-
-
     }
 
     public static class ApiResponse {
@@ -67,7 +65,6 @@ public class BookLoanController {
         public void setMessage(String message) {
             this.message = message;
         }
-
-
     }
 }
+
