@@ -34,6 +34,10 @@ public class BookLoanService {
         User user = userOpt.get();
         Book book = bookOpt.get();
 
+        if (!bookRepository.isBookAvailable(isbn)) {
+            throw new Exception("Book is not available");
+        }
+
         // Create and save the book loan
         BookLoan bookLoan = new BookLoan();
         bookLoan.setBook(book);
@@ -41,7 +45,11 @@ public class BookLoanService {
         bookLoan.setLoanDate(LocalDate.now());
         bookLoan.setReturnDate(LocalDate.now().plusWeeks(2)); // Example: 2-week loan period
         bookLoan.setRenewalsNumber(0);
-
         bookLoanRepository.save(bookLoan);
+
+        // Update book status to "Unavailable"
+        book.setStatus("Unavailable");
+        bookRepository.save(book);
     }
 }
+
