@@ -50,7 +50,9 @@
 
     <div id="loanList" style="display: none;">
       <h2>Current Loans</h2>
-      <ul id="loans"></ul>
+      <ul id="currentLoans" class="list-group"></ul>
+      <h2 class="mt-4">Returned Loans</h2>
+      <ul id="returnedLoans" class="list-group"></ul>
     </div>
   </div>
 </main>
@@ -63,35 +65,46 @@
       .then(response => response.json())
       .then(loans => {
       const loanList = document.getElementById('loanList');
-      const loansUl = document.getElementById('loans');
-      loansUl.innerHTML = '';
+      const currentLoansUl = document.getElementById('currentLoans');
+      const returnedLoansUl = document.getElementById('returnedLoans');
+      currentLoansUl.innerHTML = '';
+      returnedLoansUl.innerHTML = '';
+
       loans.forEach(loan => {
         const li = document.createElement('li');
-        li.textContent = `Book ISBN: ${loan.book.isbn}, Loan Date: ${loan.loanDate}`;
-        const button = document.createElement('button');
-        button.textContent = 'Return Book';
-        button.classList.add('btn', 'btn-secondary', 'ml-2');
-        button.onclick = function() {
-          fetch('/admin/return_book', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ bookLoanId: loan.bookLoanId })
-          })
-            .then(response => response.json())
-            .then(data => {
-            alert(data.message);
-            // Optionally, refresh the loan list
-            document.getElementById('userCardForm').dispatchEvent(new Event('submit'));
-          })
-            .catch(error => {
-            console.error('Error:', error);
-          });
-        };
-        li.appendChild(button);
-        loansUl.appendChild(li);
+        li.classList.add('list-group-item');
+        li.textContent = `Book: ${loan.book.title} (ISBN: ${loan.book.isbn}), Loan Date: ${loan.loanDate}`;
+
+        if (!loan.returnedOnDate) {
+          const button = document.createElement('button');
+          button.textContent = 'Return Book';
+          button.classList.add('btn', 'btn-secondary', 'ml-2');
+          button.onclick = function() {
+            fetch('/admin/return_book', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ bookLoanId: loan.bookLoanId })
+            })
+              .then(response => response.json())
+              .then(data => {
+              alert(data.message);
+              // Optionally, refresh the loan list
+              document.getElementById('userCardForm').dispatchEvent(new Event('submit'));
+            })
+              .catch(error => {
+              console.error('Error:', error);
+            });
+          };
+          li.appendChild(button);
+          currentLoansUl.appendChild(li);
+        } else {
+          li.textContent += `, Returned On: ${loan.returnedOnDate}`;
+          returnedLoansUl.appendChild(li);
+        }
       });
+
       loanList.style.display = 'block';
     })
       .catch(error => {
