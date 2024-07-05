@@ -73,7 +73,7 @@
       loans.forEach(loan => {
         const li = document.createElement('li');
         li.classList.add('list-group-item');
-        li.textContent = `Book: ${loan.book.title} (ISBN: ${loan.book.isbn}), Loan Date: ${loan.loanDate}`;
+        li.textContent = `Book: ${loan.book.title} (ISBN: ${loan.book.isbn}), Loan Date: ${loan.loanDate}, Due Date: ${loan.returnDate}`;
 
         if (!loan.returnedOnDate) {
           const button = document.createElement('button');
