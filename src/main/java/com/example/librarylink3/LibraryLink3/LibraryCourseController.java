@@ -38,4 +38,16 @@ public class LibraryCourseController {
         libraryCourseService.deleteCourse(id);
         return "redirect:/admin/manage_courses";
     }
+
+    @GetMapping("/admin/add_course")
+    public String showAddCoursePage(Model model) {
+        model.addAttribute("course", new LibraryCourse());
+        return "add_course";
+    }
+
+    @PostMapping("/admin/save_course")
+    public String saveCourse(@ModelAttribute LibraryCourse course) {
+        libraryCourseService.saveCourse(course);
+        return "redirect:/admin/manage_courses";
+    }
 }
