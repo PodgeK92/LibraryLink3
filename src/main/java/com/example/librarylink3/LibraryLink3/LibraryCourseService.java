@@ -33,4 +33,8 @@ public class LibraryCourseService {
         return libraryCourseRepository.findAll();
     }
 
+    public void saveCourse(LibraryCourse course) {
+        libraryCourseRepository.save(course);
+    }
 }
+
