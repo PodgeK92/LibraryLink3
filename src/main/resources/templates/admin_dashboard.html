@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard - LibraryLink</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script>
+    if (!sessionStorage.getItem('isLoggedIn')) {
+      window.location.replace('/');
+    }
+  </script>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -33,7 +38,7 @@
     <!-- Sign Out Button -->
     <ul class="navbar-nav">
       <li class="nav-item">
-        <a class="nav-link" href="#" onclick="signOut();">Sign Out</a>
+        <a class="nav-link" href="/logout">Sign Out</a>
       </li>
     </ul>
   </div>
