@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Courses</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body class="d-flex flex-column min-vh-100">
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+  <a class="navbar-brand" href="#">LibraryLink</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarCollapse">
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="/user/dashboard">Dashboard</a>
+      </li>
+      <!-- Other links -->
+      <li class="nav-item">
+        <a class="nav-link" href="#" onclick="signOut();">Sign Out</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<main role="main" class="container mt-5">
+  <div class="jumbotron">
+    <h1>Your Courses</h1>
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th>Course Name</th>
+        <th>Teacher Name</th>
+        <th>Time Slot</th>
+        <th>Enrollment Date</th>
+        <th>End Date</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="enrollment : ${enrollments}">
+        <td th:text="${enrollment.course.courseName}"></td>
+        <td th:text="${enrollment.course.teacherName}"></td>
+        <td th:text="${enrollment.course.timeSlot}"></td>
+        <td th:text="${enrollment.enrollmentDate}"></td>
+        <td th:text="${enrollment.endDate}"></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<script>
+  function signOut() {
+    // Implement sign out logic here
+    console.log('Sign out logic to be implemented.');
+  }
+</script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
