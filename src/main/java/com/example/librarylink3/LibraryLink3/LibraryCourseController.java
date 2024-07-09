@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class LibraryCourseController {
@@ -55,47 +56,40 @@ public class LibraryCourseController {
     }
 
 
-    @GetMapping("/user/enroll_course")
-    public String showEnrollCoursePage(Model model) {
-        model.addAttribute("courses", libraryCourseService.findAllCourses());
-        return "enroll_course";
-    }
-
-    @PostMapping("/user/enroll_course")
-    public String enrollInCourse(@RequestParam("cardNumberId") String cardNumberId, @RequestParam("courseId") Long courseId, Model model) {
-        User user = userRepository.findById(cardNumberId).orElse(null);
-        if (user == null) {
-            model.addAttribute("message", "Invalid card number ID.");
-            return "enroll_course";
-        }
-        LibraryCourse course = libraryCourseService.findCourseById(courseId);
-
-        try {
-            libraryCourseService.enrollUserInCourse(user, course);
-            model.addAttribute("message", "Successfully enrolled in course");
-        } catch (Exception e) {
-            model.addAttribute("message", e.getMessage());
-        }
-
-        model.addAttribute("courses", libraryCourseService.findAllCourses());
-        return "enroll_course";
-    }
-
-    @GetMapping("/user/courses")
-    public String userCourses(@RequestParam("cardNumberId") String cardNumberId, Model model) {
-        User user = userRepository.findById(cardNumberId).orElse(null);
-        if (user == null) {
-            model.addAttribute("message", "Invalid card number ID.");
-            return "user_courses";
-        }
-        model.addAttribute("enrollments", libraryCourseService.findEnrollmentsByUser(user));
-        model.addAttribute("user", user);
-        return "user_courses";
-    }
-
     @GetMapping("/user/view_courses")
     public String viewCourses(Model model) {
         model.addAttribute("courses", libraryCourseService.findAvailableCourses());
         return "view_courses";
+    }
+
+    @PostMapping("/user/enroll_course")
+    public String enrollInCourse(@RequestParam("cardNumberId") String cardNumberId, @RequestParam("courseId") Long courseId, RedirectAttributes redirectAttributes) {
+        User user = userRepository.findById(cardNumberId).orElse(null);
+        LibraryCourse course = libraryCourseService.findCourseById(courseId);
+
+        if (user == null || course == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Invalid user or course ID");
+            return "redirect:/user/view_courses";
+        }
+
+        try {
+            libraryCourseService.enrollUserInCourse(user, course);
+            redirectAttributes.addFlashAttribute("successMessage", "Successfully enrolled in course");
+            return "redirect:/user/courses?cardNumberId=" + cardNumberId;
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/user/view_courses";
+        }
+    }
+
+    @GetMapping("/user/courses")
+    public String userCourses(Model model, @RequestParam("cardNumberId") String cardNumberId) {
+        User user = userRepository.findByCardNumberId(cardNumberId).orElse(null);
+        if (user == null) {
+            model.addAttribute("message", "Invalid user ID");
+            return "user_courses";
+        }
+        model.addAttribute("enrollments", libraryCourseService.findEnrollmentsByUser(user));
+        return "user_courses";
     }
 }

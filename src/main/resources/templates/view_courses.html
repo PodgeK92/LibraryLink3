@@ -17,14 +17,9 @@
       <li class="nav-item">
         <a class="nav-link" href="/user/dashboard">Dashboard</a>
       </li>
+      <!-- Other links -->
       <li class="nav-item">
-        <a class="nav-link" href="/user/enroll_course">Enroll in Course</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/user/courses">My Courses</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/logout">Sign Out</a>
+        <a class="nav-link" href="#" onclick="signOut();">Sign Out</a>
       </li>
     </ul>
   </div>
@@ -43,7 +38,6 @@
         <th>Age Category</th>
         <th>Time Slot</th>
         <th>Description</th>
-        <th>Actions</th>
       </tr>
       </thead>
       <tbody>
@@ -58,16 +52,35 @@
           <div class="course-description" th:text="${course.description}"></div>
           <button class="btn btn-link btn-sm" onclick="toggleDescription(this)">Read more</button>
         </td>
-        <td>
-          <button class="btn btn-primary btn-sm" onclick="enrollInCourse([[${course.id}]])">Enroll</button>
-        </td>
       </tr>
       </tbody>
     </table>
   </div>
+  <div class="jumbotron">
+    <h1>Enroll in a Course</h1>
+    <form id="enrollForm" action="/user/enroll_course" method="post">
+      <div class="form-group">
+        <label for="cardNumberId">Card Number ID</label>
+        <input type="text" class="form-control" id="cardNumberId" name="cardNumberId" required>
+      </div>
+      <div class="form-group">
+        <label for="courseId">Select Course</label>
+        <select class="form-control" id="courseId" name="courseId" required>
+          <option value="" disabled selected>Select a course</option>
+          <option th:each="course : ${courses}" th:value="${course.id}" th:text="${course.courseName}"></option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary">Enroll</button>
+    </form>
+  </div>
 </main>
 
 <script>
+  function signOut() {
+    // Implement sign out logic here
+    console.log('Sign out logic to be implemented.');
+  }
+
   function toggleDescription(button) {
     const descriptionDiv = button.previousElementSibling;
     if (descriptionDiv.style.display === 'none' || descriptionDiv.style.display === '') {
@@ -76,26 +89,6 @@
     } else {
       descriptionDiv.style.display = 'none';
       button.textContent = 'Read more';
-    }
-  }
-
-  function enrollInCourse(courseId) {
-    const cardNumberId = prompt('Please enter your Card Number ID:');
-    if (cardNumberId) {
-      fetch('/user/enroll_course', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: `cardNumberId=${cardNumberId}&courseId=${courseId}`
-      })
-        .then(response => response.text())
-        .then(data => {
-        location.reload();
-      })
-        .catch(error => {
-        console.error('Error:', error);
-      });
     }
   }
 </script>
