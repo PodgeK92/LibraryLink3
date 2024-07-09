@@ -14,6 +14,9 @@ public class LibraryCourseController {
     @Autowired
     private LibraryCourseService libraryCourseService;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @GetMapping("/admin/manage_courses")
     public String manageCourses(Model model) {
         model.addAttribute("courses", libraryCourseService.findAllCourses());
@@ -49,5 +52,45 @@ public class LibraryCourseController {
     public String saveCourse(@ModelAttribute LibraryCourse course) {
         libraryCourseService.saveCourse(course);
         return "redirect:/admin/manage_courses";
+    }
+
+
+    @GetMapping("/user/enroll_course")
+    public String showEnrollCoursePage(@RequestParam("cardNumberId") String cardNumberId, Model model) {
+        User user = userRepository.findById(cardNumberId).orElse(null);
+        if (user == null) {
+            return "redirect:/login"; // Redirect to login if user not found
+        }
+        model.addAttribute("courses", libraryCourseService.findAllCourses());
+        model.addAttribute("user", user);
+        return "enroll_course";
+    }
+
+    @PostMapping("/user/enroll_course")
+    public String enrollInCourse(@RequestParam("cardNumberId") String cardNumberId, @RequestParam("courseId") Long courseId, Model model) {
+        User user = userRepository.findById(cardNumberId).orElse(null);
+        if (user == null) {
+            return "redirect:/login"; // Redirect to login if user not found
+        }
+        LibraryCourse course = libraryCourseService.findCourseById(courseId);
+
+        try {
+            libraryCourseService.enrollUserInCourse(user, course);
+            model.addAttribute("message", "Successfully enrolled in course");
+        } catch (Exception e) {
+            model.addAttribute("message", e.getMessage());
+        }
+
+        return "enroll_course";
+    }
+
+    @GetMapping("/user/courses")
+    public String userCourses(@RequestParam("cardNumberId") String cardNumberId, Model model) {
+        User user = userRepository.findById(cardNumberId).orElse(null);
+        if (user == null) {
+            return "redirect:/login"; // Redirect to login if user not found
+        }
+        model.addAttribute("enrollments", libraryCourseService.findEnrollmentsByUser(user));
+        return "user_courses";
     }
 }

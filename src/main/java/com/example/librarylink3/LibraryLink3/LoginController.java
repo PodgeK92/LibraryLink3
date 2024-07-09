@@ -6,8 +6,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import jakarta.servlet.http.HttpSession;
-
 import java.util.Optional;
 
 @Controller
@@ -17,13 +15,11 @@ public class LoginController {
     private UserRepository userRepository;
 
     @PostMapping("/login")
-    public String login(@RequestParam String cardNumberId, @RequestParam String password, HttpSession session, Model model) {
+    public String login(@RequestParam String cardNumberId, @RequestParam String password, Model model) {
         Optional<User> user = userRepository.findByCardNumberIdAndPassword(cardNumberId, password);
 
-        if (user != null) {
-            session.setAttribute("isLoggedIn", true);
-            session.setAttribute("user", user);
-            return "redirect:/user/dashboard";
+        if (user.isPresent()) {
+            return "redirect:/user/dashboard?cardNumberId=" + cardNumberId;
         } else {
             model.addAttribute("error", "Invalid card number or password");
             return "login";

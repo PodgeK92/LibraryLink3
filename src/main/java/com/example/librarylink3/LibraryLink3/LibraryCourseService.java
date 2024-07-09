@@ -3,8 +3,8 @@ package com.example.librarylink3.LibraryLink3;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class LibraryCourseService {
@@ -12,9 +12,11 @@ public class LibraryCourseService {
     @Autowired
     private LibraryCourseRepository libraryCourseRepository;
 
+    @Autowired
+    private AttendsRepository attendsRepository;
+
     public LibraryCourse findCourseById(Long id) {
-        Optional<LibraryCourse> courseOpt = libraryCourseRepository.findById(id);
-        return courseOpt.orElse(null);
+        return libraryCourseRepository.findById(id).orElse(null);
     }
 
     public void updateCourse(LibraryCourse course) {
@@ -25,6 +27,10 @@ public class LibraryCourseService {
         libraryCourseRepository.deleteById(id);
     }
 
+    public void saveCourse(LibraryCourse course) {
+        libraryCourseRepository.save(course);
+    }
+
     public List<LibraryCourse> findAllCourses() {
         return libraryCourseRepository.findAll();
     }
@@ -33,8 +39,22 @@ public class LibraryCourseService {
         return libraryCourseRepository.findAll();
     }
 
-    public void saveCourse(LibraryCourse course) {
-        libraryCourseRepository.save(course);
+    public void enrollUserInCourse(User user, LibraryCourse course) throws Exception {
+        long enrolledCount = attendsRepository.countByCourseIdAndEndDateAfter(course.getId(), LocalDate.now());
+        if (enrolledCount >= course.getCourseSize()) {
+            throw new Exception("Course is full.");
+        }
+
+        Attends enrollment = new Attends();
+        enrollment.setUser(user);
+        enrollment.setCourse(course);
+        enrollment.setEnrollmentDate(LocalDate.now());
+        enrollment.setEndDate(LocalDate.now().plusWeeks(6)); // Example: 6-week enrollment period
+
+        attendsRepository.save(enrollment);
+    }
+
+    public List<Attends> findEnrollmentsByUser(User user) {
+        return attendsRepository.findByUser(user);
     }
 }
-
