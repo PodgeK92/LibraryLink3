@@ -83,6 +83,11 @@ public class LibraryCourseController {
     }
 
     @GetMapping("/user/courses")
+    public String userCoursesPage() {
+        return "user_courses";
+    }
+
+    @PostMapping("/user/courses")
     public String userCourses(Model model, @RequestParam("cardNumberId") String cardNumberId) {
         User user = userRepository.findByCardNumberId(cardNumberId).orElse(null);
         if (user == null) {
