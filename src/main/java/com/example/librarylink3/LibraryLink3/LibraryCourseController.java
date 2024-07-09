@@ -56,13 +56,8 @@ public class LibraryCourseController {
 
 
     @GetMapping("/user/enroll_course")
-    public String showEnrollCoursePage(@RequestParam("cardNumberId") String cardNumberId, Model model) {
-        User user = userRepository.findById(cardNumberId).orElse(null);
-        if (user == null) {
-            return "redirect:/login"; // Redirect to login if user not found
-        }
+    public String showEnrollCoursePage(Model model) {
         model.addAttribute("courses", libraryCourseService.findAllCourses());
-        model.addAttribute("user", user);
         return "enroll_course";
     }
 
@@ -70,7 +65,8 @@ public class LibraryCourseController {
     public String enrollInCourse(@RequestParam("cardNumberId") String cardNumberId, @RequestParam("courseId") Long courseId, Model model) {
         User user = userRepository.findById(cardNumberId).orElse(null);
         if (user == null) {
-            return "redirect:/login"; // Redirect to login if user not found
+            model.addAttribute("message", "Invalid card number ID.");
+            return "enroll_course";
         }
         LibraryCourse course = libraryCourseService.findCourseById(courseId);
 
@@ -81,6 +77,7 @@ public class LibraryCourseController {
             model.addAttribute("message", e.getMessage());
         }
 
+        model.addAttribute("courses", libraryCourseService.findAllCourses());
         return "enroll_course";
     }
 
@@ -88,9 +85,17 @@ public class LibraryCourseController {
     public String userCourses(@RequestParam("cardNumberId") String cardNumberId, Model model) {
         User user = userRepository.findById(cardNumberId).orElse(null);
         if (user == null) {
-            return "redirect:/login"; // Redirect to login if user not found
+            model.addAttribute("message", "Invalid card number ID.");
+            return "user_courses";
         }
         model.addAttribute("enrollments", libraryCourseService.findEnrollmentsByUser(user));
+        model.addAttribute("user", user);
         return "user_courses";
+    }
+
+    @GetMapping("/user/view_courses")
+    public String viewCourses(Model model) {
+        model.addAttribute("courses", libraryCourseService.findAvailableCourses());
+        return "view_courses";
     }
 }

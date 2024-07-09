@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class LibraryCourseService {
@@ -56,5 +57,11 @@ public class LibraryCourseService {
 
     public List<Attends> findEnrollmentsByUser(User user) {
         return attendsRepository.findByUser(user);
+    }
+
+    public List<LibraryCourse> findAvailableCourses() {
+        return libraryCourseRepository.findAll().stream()
+                .filter(course -> attendsRepository.countByCourseIdAndEndDateAfter(course.getId(), LocalDate.now()) < course.getCourseSize())
+                .collect(Collectors.toList());
     }
 }
