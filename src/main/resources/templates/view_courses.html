@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Courses</title>
+  <title>Available Courses</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body class="d-flex flex-column min-vh-100">
@@ -18,10 +18,10 @@
         <a class="nav-link" href="/user/dashboard">Dashboard</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/user/view_courses">View Courses</a>
+        <a class="nav-link" href="/user/enroll_course">Enroll in Course</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/user/enroll_course">Enroll in Course</a>
+        <a class="nav-link" href="/user/courses">My Courses</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="/logout">Sign Out</a>
@@ -32,18 +32,8 @@
 
 <main role="main" class="container mt-5">
   <div class="jumbotron">
-    <h1>My Courses</h1>
-    <form action="/user/courses" method="get">
-      <div class="form-group">
-        <label for="cardNumberId">Card Number ID</label>
-        <input type="text" class="form-control" id="cardNumberId" name="cardNumberId" required>
-      </div>
-      <button type="submit" class="btn btn-primary">View My Courses</button>
-    </form>
-    <div th:if="${message}">
-      <div class="alert alert-info" th:text="${message}"></div>
-    </div>
-    <table class="table table-striped" th:if="${enrollments}">
+    <h1>Available Courses</h1>
+    <table class="table table-striped">
       <thead>
       <tr>
         <th>Course ID</th>
@@ -53,24 +43,24 @@
         <th>Age Category</th>
         <th>Time Slot</th>
         <th>Description</th>
-        <th>Enrollment Date</th>
-        <th>End Date</th>
+        <th>Actions</th>
       </tr>
       </thead>
       <tbody>
-      <tr th:each="enrollment : ${enrollments}">
-        <td th:text="${enrollment.course.id}"></td>
-        <td th:text="${enrollment.course.courseName}"></td>
-        <td th:text="${enrollment.course.teacherName}"></td>
-        <td th:text="${enrollment.course.courseSize}"></td>
-        <td th:text="${enrollment.course.ageCategory}"></td>
-        <td th:text="${enrollment.course.timeSlot}"></td>
+      <tr th:each="course : ${courses}">
+        <td th:text="${course.id}"></td>
+        <td th:text="${course.courseName}"></td>
+        <td th:text="${course.teacherName}"></td>
+        <td th:text="${course.courseSize}"></td>
+        <td th:text="${course.ageCategory}"></td>
+        <td th:text="${course.timeSlot}"></td>
         <td>
-          <div class="course-description" th:text="${enrollment.course.description}"></div>
+          <div class="course-description" th:text="${course.description}"></div>
           <button class="btn btn-link btn-sm" onclick="toggleDescription(this)">Read more</button>
         </td>
-        <td th:text="${enrollment.enrollmentDate}"></td>
-        <td th:text="${enrollment.endDate}"></td>
+        <td>
+          <button class="btn btn-primary btn-sm" onclick="enrollInCourse([[${course.id}]])">Enroll</button>
+        </td>
       </tr>
       </tbody>
     </table>
@@ -86,6 +76,26 @@
     } else {
       descriptionDiv.style.display = 'none';
       button.textContent = 'Read more';
+    }
+  }
+
+  function enrollInCourse(courseId) {
+    const cardNumberId = prompt('Please enter your Card Number ID:');
+    if (cardNumberId) {
+      fetch('/user/enroll_course', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: `cardNumberId=${cardNumberId}&courseId=${courseId}`
+      })
+        .then(response => response.text())
+        .then(data => {
+        location.reload();
+      })
+        .catch(error => {
+        console.error('Error:', error);
+      });
     }
   }
 </script>
