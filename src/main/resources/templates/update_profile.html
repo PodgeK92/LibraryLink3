@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Update Profile</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body class="d-flex flex-column min-vh-100">
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+  <a class="navbar-brand" href="#">LibraryLink User</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarCollapse">
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="/user/dashboard">Dashboard</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/user/view_courses">View Courses</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/user/courses">My Courses</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/logout">Sign Out</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<main role="main" class="container mt-5">
+  <div class="jumbotron">
+    <h1>Update Profile</h1>
+    <div th:if="${successMessage}">
+      <div class="alert alert-success" th:text="${successMessage}"></div>
+    </div>
+    <div th:if="${errorMessage}">
+      <div class="alert alert-danger" th:text="${errorMessage}"></div>
+    </div>
+    <form action="/user/update_profile" method="get" id="cardNumberForm">
+      <div class="form-group">
+        <label for="cardNumberId">Card Number ID</label>
+        <input type="text" class="form-control" id="cardNumberId" name="cardNumberId" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+    <form action="/user/update_profile" method="post" th:if="${user != null}">
+      <input type="hidden" th:value="${user.cardNumberId}" name="cardNumberId">
+      <div class="form-group">
+        <label for="firstName">First Name</label>
+        <input type="text" class="form-control" id="firstName" name="firstName" th:value="${user.firstName}" required>
+      </div>
+      <div class="form-group">
+        <label for="lastName">Last Name</label>
+        <input type="text" class="form-control" id="lastName" name="lastName" th:value="${user.lastName}" required>
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" class="form-control" id="email" name="email" th:value="${user.email}" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" class="form-control" id="password" name="password">
+      </div>
+      <div class="form-group">
+        <label for="phoneNumber">Phone Number</label>
+        <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" th:value="${user.phoneNumber}">
+      </div>
+      <div class="form-group">
+        <label for="streetName">Street Name</label>
+        <input type="text" class="form-control" id="streetName" name="streetName" th:value="${user.streetName}">
+      </div>
+      <div class="form-group">
+        <label for="townCity">Town/City</label>
+        <input type="text" class="form-control" id="townCity" name="townCity" th:value="${user.townCity}">
+      </div>
+      <div class="form-group">
+        <label for="county">County</label>
+        <input type="text" class="form-control" id="county" name="county" th:value="${user.county}">
+      </div>
+      <button type="submit" class="btn btn-primary">Update</button>
+    </form>
+  </div>
+</main>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
+
