@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Users</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body class="d-flex flex-column min-vh-100">
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+  <a class="navbar-brand" href="#">LibraryLink Admin</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarCollapse">
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="/admin/dashboard">Dashboard</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/logout">Sign Out</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<main role="main" class="container mt-5">
+  <div class="jumbotron">
+    <h1>Manage Users</h1>
+    <button class="btn btn-primary mb-3" onclick="showAddUserForm()">Add User</button>
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th>Card Number ID</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Email</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody id="usersTableBody">
+      <!-- Users will be populated here -->
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<!-- Add/Edit User Modal -->
+<div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="userModalLabel">Add/Edit User</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="userForm">
+          <div class="form-group">
+            <label for="cardNumberId">Card Number ID</label>
+            <input type="text" class="form-control" id="cardNumberId" name="cardNumberId" readonly>
+          </div>
+          <div class="form-group">
+            <label for="firstName">First Name</label>
+            <input type="text" class="form-control" id="firstName" name="firstName" required>
+          </div>
+          <div class="form-group">
+            <label for="lastName">Last Name</label>
+            <input type="text" class="form-control" id="lastName" name="lastName" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" class="form-control" id="email" name="email" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    fetch('/admin/get_users')
+      .then(response => response.json())
+      .then(data => {
+      const usersTableBody = document.getElementById('usersTableBody');
+      usersTableBody.innerHTML = '';
+      data.forEach(user => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${user.cardNumberId}</td>
+            <td>${user.firstName}</td>
+            <td>${user.lastName}</td>
+            <td>${user.email}</td>
+            <td>
+              <button class="btn btn-warning btn-sm" onclick="showEditUserForm('${user.cardNumberId}')">Edit</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteUser('${user.cardNumberId}')">Delete</button>
+            </td>
+          `;
+        usersTableBody.appendChild(row);
+      });
+    });
+  });
+
+  function showAddUserForm() {
+    document.getElementById('userForm').reset();
+    document.getElementById('cardNumberId').removeAttribute('readonly');
+    $('#userModal').modal('show');
+  }
+
+  function showEditUserForm(cardNumberId) {
+    fetch(`/admin/get_user?cardNumberId=${cardNumberId}`)
+      .then(response => response.json())
+      .then(user => {
+      document.getElementById('cardNumberId').value = user.cardNumberId;
+      document.getElementById('firstName').value = user.firstName;
+      document.getElementById('lastName').value = user.lastName;
+      document.getElementById('email').value = user.email;
+      document.getElementById('cardNumberId').setAttribute('readonly', true);
+      $('#userModal').modal('show');
+    });
+  }
+
+  function deleteUser(cardNumberId) {
+    fetch(`/admin/delete_user?cardNumberId=${cardNumberId}`, {
+      method: 'DELETE'
+    })
+      .then(response => response.json())
+      .then(data => {
+      if (data.success) {
+        location.reload();
+      } else {
+        alert(data.message);
+      }
+    });
+  }
+
+  document.getElementById('userForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const formData = new FormData(this);
+    fetch('/admin/save_user', {
+      method: 'POST',
+      body: JSON.stringify(Object.fromEntries(formData)),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+      if (data.success) {
+        $('#userModal').modal('hide');
+        location.reload();
+      } else {
+        alert(data.message);
+      }
+    });
+  });
+</script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

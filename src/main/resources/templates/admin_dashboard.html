@@ -53,15 +53,6 @@
       </div>
     </div>
     <div class="col-md-4">
-      <div class="card text-white bg-info mb-3">
-        <div class="card-header">Total Members</div>
-        <div class="card-body">
-          <h5 class="card-title" th:text="${totalMembersCount}"></h5>
-          <p class="card-text">Members registered with the library.</p>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4">
       <div class="card text-white bg-primary mb-3">
         <div class="card-header">Admins</div>
         <div class="card-body">
@@ -75,9 +66,9 @@
       <div class="card text-white bg-secondary mb-3">
         <div class="card-header">Users</div>
         <div class="card-body">
-          <h5 class="card-title" th:text="${totalMembersCount}"></h5>
-          <p class="card-text">Total number of users.</p>
-          <a href="/admin/users" class="btn btn-light">Manage Users</a>
+          <h5 class="card-title">Manage Users</h5>
+          <p class="card-text">Total number of users: <span style="font-size: smaller;" th:text="${totalMembersCount}"></span></p>
+          <a href="/admin/manage_users" class="btn btn-light">Manage Users</a>
         </div>
       </div>
     </div>
