@@ -52,22 +52,14 @@
         </div>
       </div>
     </div>
-    <div class="col-md-4">
-      <div class="card text-white bg-primary mb-3">
-        <div class="card-header">Admins</div>
-        <div class="card-body">
-          <h5 class="card-title" th:text="${totalAdminsCount}"></h5>
-          <p class="card-text">Total number of admins.</p>
-          <a href="/admin/create" class="btn btn-light">Create Admin</a>
-        </div>
-      </div>
-    </div>
+
     <div class="col-md-4">
       <div class="card text-white bg-info mb-3">
         <div class="card-header">Admins</div>
         <div class="card-body">
           <h5 class="card-title">Manage Admins</h5>
           <p class="card-text">View, create, and manage admins.</p>
+          <p class="card-text">Total number of admins: <span style="font-size: smaller;" th:text="${totalAdminsCount}"></span></p>
           <a href="/admin/manage_admins" class="btn btn-light">Manage Admins</a>
         </div>
       </div>
