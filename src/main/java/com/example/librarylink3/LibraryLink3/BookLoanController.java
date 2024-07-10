@@ -37,8 +37,24 @@ public class BookLoanController {
         return "book_return";
     }
 
+    @GetMapping("/user/loans")
+    public String showUserLoansPage() {
+        return "user_loans";
+    }
+
+    @PostMapping("/user/loans")
+    public String getUserLoans(@RequestParam("cardNumberId") String cardNumberId, Model model) {
+        try {
+            List<BookLoan> loans = bookLoanService.getUserLoans(cardNumberId);
+            model.addAttribute("loans", loans);
+        } catch (Exception e) {
+            model.addAttribute("message", e.getMessage());
+        }
+        return "user_loans";
+    }
+
     @GetMapping("/admin/user_loans")
-    public ResponseEntity<?> getUserLoans(@RequestParam("cardNumberId") String cardNumberId) {
+    public ResponseEntity<?> getUserLoansAdmin(@RequestParam("cardNumberId") String cardNumberId) {
         try {
             List<BookLoan> loans = bookLoanService.getUserLoans(cardNumberId);
             return ResponseEntity.ok(loans);
