@@ -57,10 +57,7 @@
       </div>
       <div class="modal-body">
         <form id="userForm">
-          <div class="form-group">
-            <label for="cardNumberId">Card Number ID</label>
-            <input type="text" class="form-control" id="cardNumberId" name="cardNumberId" readonly>
-          </div>
+          <!-- Remove cardNumberId input for Add User form -->
           <div class="form-group">
             <label for="firstName">First Name</label>
             <input type="text" class="form-control" id="firstName" name="firstName" required>
@@ -126,7 +123,6 @@
 
   function showAddUserForm() {
     document.getElementById('userForm').reset();
-    document.getElementById('cardNumberId').removeAttribute('readonly');
     $('#userModal').modal('show');
   }
 
