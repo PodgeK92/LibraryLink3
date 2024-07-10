@@ -9,33 +9,24 @@
 <body class="d-flex flex-column min-vh-100">
 <!-- Navigation bar -->
 <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-  <a class="navbar-brand" href="#">LibraryLink Admin</a>
+  <a class="navbar-brand" href="#">LibraryLink User</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarCollapse">
     <ul class="navbar-nav ml-auto">
       <li class="nav-item">
-        <a class="nav-link" href="/admin/dashboard">Dashboard</a>
+        <a class="nav-link" href="/user/dashboard">Dashboard</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Members</a>
+        <a class="nav-link" href="/user/view_courses">View Courses</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Inventory</a>
+        <a class="nav-link" href="/user/enroll_course">Enroll in Course</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Loans</a>
+        <a class="nav-link" href="/logout">Sign Out</a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Reports</a>
-      </li>
-      <!-- Sign Out Button -->
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link" href="/logout">Sign Out</a>
-        </li>
-      </ul>
     </ul>
   </div>
 </nav>
@@ -43,7 +34,17 @@
 <main role="main" class="container mt-5">
   <div class="jumbotron">
     <h1>User Loans</h1>
-    <table class="table">
+    <form id="loanForm" action="/user/loans" method="post">
+      <div class="form-group">
+        <label for="cardNumberId">Card Number ID</label>
+        <input type="text" class="form-control" id="cardNumberId" name="cardNumberId" required>
+      </div>
+      <button type="submit" class="btn btn-primary">View My Loans</button>
+    </form>
+    <div th:if="${message}">
+      <div class="alert alert-info" th:text="${message}"></div>
+    </div>
+    <table class="table table-striped" id="loansTable" th:if="${loans}">
       <thead>
       <tr>
         <th scope="col">Loan ID</th>
@@ -52,58 +53,23 @@
         <th scope="col">Author</th>
         <th scope="col">Loan Date</th>
         <th scope="col">Return Date</th>
-        <th scope="col">Action</th>
       </tr>
       </thead>
-      <tbody id="loansTableBody">
-      <!-- Loans will be populated here -->
+      <tbody id="loansTableBody" th:each="loan : ${loans}">
+      <tr>
+        <td th:text="${loan.bookLoanId}"></td>
+        <td th:text="${loan.book.isbn}"></td>
+        <td th:text="${loan.book.title}"></td>
+        <td th:text="${loan.book.author}"></td>
+        <td th:text="${loan.loanDate}"></td>
+        <td th:text="${loan.returnDate}"></td>
+      </tr>
       </tbody>
     </table>
   </div>
 </main>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const cardNumberId = urlParams.get('cardNumberId');
-
-    fetch('/admin/user_loans?cardNumberId=' + cardNumberId)
-      .then(response => response.json())
-      .then(data => {
-      const loansTableBody = document.getElementById('loansTableBody');
-      data.forEach(loan => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${loan.bookLoanId}</td>
-            <td>${loan.isbn}</td>
-            <td>${loan.title}</td>
-            <td>${loan.author}</td>
-            <td>${loan.loanDate}</td>
-            <td>${loan.returnDate}</td>
-            <td><button class="btn btn-success" onclick="returnBook(${loan.bookLoanId})">Return</button></td>
-          `;
-        loansTableBody.appendChild(row);
-      });
-    })
-      .catch(error => console.error('Error:', error));
-  });
-
-  function returnBook(bookLoanId) {
-    fetch('/admin/return_book', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ bookLoanId })
-    })
-      .then(response => response.json())
-      .then(data => {
-      alert(data.message);
-      location.reload();
-    })
-      .catch(error => console.error('Error:', error));
-  }
-
   function signOut() {
     console.log('Sign out logic to be implemented.');
   }
