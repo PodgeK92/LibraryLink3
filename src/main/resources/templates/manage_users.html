@@ -73,6 +73,26 @@
             <label for="email">Email</label>
             <input type="email" class="form-control" id="email" name="email" required>
           </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" class="form-control" id="password" name="password">
+          </div>
+          <div class="form-group">
+            <label for="phoneNumber">Phone Number</label>
+            <input type="text" class="form-control" id="phoneNumber" name="phoneNumber">
+          </div>
+          <div class="form-group">
+            <label for="streetName">Street Name</label>
+            <input type="text" class="form-control" id="streetName" name="streetName">
+          </div>
+          <div class="form-group">
+            <label for="townCity">Town/City</label>
+            <input type="text" class="form-control" id="townCity" name="townCity">
+          </div>
+          <div class="form-group">
+            <label for="county">County</label>
+            <input type="text" class="form-control" id="county" name="county">
+          </div>
           <button type="submit" class="btn btn-primary">Save</button>
         </form>
       </div>
@@ -118,6 +138,11 @@
       document.getElementById('firstName').value = user.firstName;
       document.getElementById('lastName').value = user.lastName;
       document.getElementById('email').value = user.email;
+      document.getElementById('password').value = user.password;
+      document.getElementById('phoneNumber').value = user.phoneNumber;
+      document.getElementById('streetName').value = user.streetName;
+      document.getElementById('townCity').value = user.townCity;
+      document.getElementById('county').value = user.county;
       document.getElementById('cardNumberId').setAttribute('readonly', true);
       $('#userModal').modal('show');
     });
