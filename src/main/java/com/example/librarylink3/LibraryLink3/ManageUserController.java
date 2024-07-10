@@ -13,6 +13,9 @@ public class ManageUserController {
     @Autowired
     private ManageUserService manageUserService;
 
+    @Autowired
+    private UserService userService; // Add this to use the card number generation method
+
     @GetMapping("/admin/manage_users")
     public String showManageUsersPage(Model model) {
         int totalMembersCount = manageUserService.getTotalUsersCount();
@@ -36,6 +39,10 @@ public class ManageUserController {
     @ResponseBody
     public ApiResponse saveUser(@RequestBody User user) {
         try {
+            // Generate card number if not provided (new user)
+            if (user.getCardNumberId() == null || user.getCardNumberId().isEmpty()) {
+                user.setCardNumberId(userService.generateUniqueCardNumber('G'));
+            }
             manageUserService.saveUser(user);
             return new ApiResponse(true, "User saved successfully");
         } catch (Exception e) {
@@ -54,4 +61,5 @@ public class ManageUserController {
         }
     }
 }
+
 
