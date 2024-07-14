@@ -4,10 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class UserController {
@@ -32,12 +29,25 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody User user) {
-        // Assuming 'G' is the library initial for Galway City Library
-        char libraryInitial = 'G';
-        userService.registerUser(user, libraryInitial);
-        return ResponseEntity.ok("User registered successfully");
+    @ResponseBody
+    public ResponseEntity<RegistrationAPIResponse> registerUser(@RequestBody User user) {
+        try {
+            // Assuming 'G' is the library initial for Galway City Library
+            char libraryInitial = 'G';
+            userService.registerUser(user, libraryInitial);
+            return ResponseEntity.ok(new RegistrationAPIResponse(true, "User registered successfully", user.getCardNumberId()));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new RegistrationAPIResponse(false, e.getMessage(), null));
+        }
     }
+
+    @GetMapping("/welcome")
+    public String showWelcomePage(@RequestParam("userName") String userName, @RequestParam("cardNumberId") String cardNumberId, Model model) {
+        model.addAttribute("userName", userName);
+        model.addAttribute("cardNumberId", cardNumberId);
+        return "welcome";
+    }
+
 
     @GetMapping("/user/login")
     public String showLoginForm() {
