@@ -3,11 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LibraryLink - Sign Up Step 3</title>
+  <title>Welcome to LibraryLink</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body class="d-flex flex-column min-vh-100">
-<!-- Navigation bar -->
 <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
   <a class="navbar-brand" href="#">LibraryLink</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,18 +33,13 @@
   </div>
 </nav>
 
-<main role="main" class="container">
+<main role="main" class="container mt-5">
   <div class="jumbotron">
-    <h1>Sign Up - Step 3</h1>
-    <form id="step3Form" onsubmit="completeRegistration(event)">
-      <div class="form-group">
-        <label for="homeBranch">Select Library Branch</label>
-        <select class="form-control" id="homeBranch" name="homeBranch" required>
-          <option value="Galway City Library">Galway City Library</option>
-        </select>
-      </div>
-      <button type="submit" class="btn btn-primary">Complete Registration</button>
-    </form>
+    <h1>Welcome to LibraryLink, <span id="userName"></span>!</h1>
+    <p>Your Card Number ID is:</p>
+    <h2 id="cardNumberId" class="display-4"></h2>
+    <p>Please keep this number safe as you will need it to log in.</p>
+    <a href="/user/login" class="btn btn-primary">Go to Login Page</a>
   </div>
 </main>
 
@@ -67,38 +61,14 @@
 </footer>
 
 <script>
-  function completeRegistration(event) {
-    event.preventDefault();
+  document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const userName = urlParams.get('userName');
+    const cardNumberId = urlParams.get('cardNumberId');
 
-    const form = document.getElementById('step3Form');
-    const formData = new FormData(form);
-    const data = {};
-    formData.forEach((value, key) => data[key] = value);
-
-    const step1Data = JSON.parse(sessionStorage.getItem('step1Data'));
-    const step2Data = JSON.parse(sessionStorage.getItem('step2Data'));
-
-    const fullData = { ...step1Data, ...step2Data, ...data };
-
-    fetch('/register', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(fullData)
-    })
-      .then(response => response.json())
-      .then(data => {
-      if (data.success) {
-        const userName = fullData.firstName + ' ' + fullData.lastName;
-        const cardNumberId = data.cardNumberId; // Assuming the response contains the cardNumberId
-        window.location.href = `/welcome?userName=${encodeURIComponent(userName)}&cardNumberId=${encodeURIComponent(cardNumberId)}`;
-      } else {
-        console.error('Error registering user:', data.message);
-      }
-    })
-      .catch(error => console.error('Error:', error));
-  }
+    document.getElementById('userName').textContent = userName;
+    document.getElementById('cardNumberId').textContent = cardNumberId;
+  });
 </script>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
