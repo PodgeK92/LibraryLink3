@@ -18,19 +18,7 @@
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item">
-        <a class="nav-link" href="#">Dashboard</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Members</a>
-      </li>
-      <li class="nav-item active">
-        <a class="nav-link" href="#">Inventory <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Loans</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Reports</a>
+        <a class="nav-link" href="/admin/dashboard">Dashboard</a>
       </li>
     </ul>
     <!-- Sign Out Button -->
@@ -190,11 +178,6 @@
 
 
 <script>
-  function signOut() {
-    // Placeholder for sign out logic
-    console.log('Sign out logic to be implemented.');
-  }
-
   function searchBooks() {
     const query = document.getElementById('bookSearch').value.toLowerCase();
     const rows = document.querySelectorAll('tbody tr');
