@@ -25,7 +25,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 resultsContainer.innerHTML = '<div class="list-group-item">No results found.</div>';
                 return;
             }
-            data.items.forEach((item, index) => {
+
+            let books = data.items.map((item, index) => {
                 const volumeInfo = item.volumeInfo;
                 const title = volumeInfo.title;
                 const authors = volumeInfo.authors ? volumeInfo.authors.join(', ') : 'Unknown author';
@@ -36,31 +37,52 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Use only the first ISBN for generating the ID to avoid duplication issues
                 const primaryIsbn = volumeInfo.industryIdentifiers ? volumeInfo.industryIdentifiers[0].identifier.replace(/[^a-zA-Z0-9]/g, '') : 'ISBNnotavailable';
 
-                const bookItemHTML = `
-                        <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h5 class="mb-1">${title}</h5>
-                                <small class="availability" id="isbn-${primaryIsbn}">Availability: Unavailable</small>
-                            </div>
-                            <p class="mb-1">Author: ${authors}</p>
-                            <p class="mb-1">Genre: ${volumeInfo.categories ? volumeInfo.categories.join(', ') : 'Genre not available'}</p>
-                            <p class="mb-1">Year Published: ${volumeInfo.publishedDate || 'Year not available'}</p>
-                            <small>ISBN: ${isbns}</small>
-                            <img src="${coverUrl}" alt="Cover image" class="img-fluid">
-                            <div class="collapse mt-3" id="collapseDescription${index}">
-                                <p>Description: ${description}</p>
-                            </div>
-                            <a class="btn btn-sm btn-outline-primary" data-toggle="collapse" href="#collapseDescription${index}" role="button" aria-expanded="false" aria-controls="collapseDescription${index}">Read More</a>
-                        </a>
-                    `;
-                resultsContainer.innerHTML += bookItemHTML;
-
-                // Check availability for each ISBN
-                isbns.split(', ').forEach(isbn => checkBookAvailability(isbn, primaryIsbn));
+                return {
+                    title,
+                    authors,
+                    description,
+                    coverUrl,
+                    isbns,
+                    primaryIsbn,
+                    index,
+                    availability: 'Unavailable' // Default availability
+                };
             });
 
-            // Add pagination controls
-            addPaginationControls(data.totalItems, page);
+            // Check availability for each book and sort them
+            let availabilityPromises = books.map(book => {
+                return checkBookAvailability(book.isbns.split(', '), book.primaryIsbn).then(isAvailable => {
+                    book.availability = isAvailable ? 'Available' : 'Unavailable';
+                    return book;
+                });
+            });
+
+            Promise.all(availabilityPromises).then(sortedBooks => {
+                sortedBooks.sort((a, b) => (a.availability === 'Available' ? -1 : 1));
+                sortedBooks.forEach(book => {
+                    const bookItemHTML = `
+                            <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">${book.title}</h5>
+                                    <small class="availability" id="isbn-${book.primaryIsbn}">Availability: ${book.availability}</small>
+                                </div>
+                                <p class="mb-1">Author: ${book.authors}</p>
+                                <p class="mb-1">Genre: ${book.categories ? book.categories.join(', ') : 'Genre not available'}</p>
+                                <p class="mb-1">Year Published: ${book.publishedDate || 'Year not available'}</p>
+                                <small>ISBN: ${book.isbns}</small>
+                                <img src="${book.coverUrl}" alt="Cover image" class="img-fluid">
+                                <div class="collapse mt-3" id="collapseDescription${book.index}">
+                                    <p>Description: ${book.description}</p>
+                                </div>
+                                <a class="btn btn-sm btn-outline-primary" data-toggle="collapse" href="#collapseDescription${book.index}" role="button" aria-expanded="false" aria-controls="collapseDescription${book.index}">Read More</a>
+                            </a>
+                        `;
+                    resultsContainer.innerHTML += bookItemHTML;
+                });
+
+                // Add pagination controls
+                addPaginationControls(data.totalItems, page);
+            });
         })
             .catch(error => {
             console.error('Error fetching data:', error);
@@ -68,19 +90,19 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     };
 
-    const checkBookAvailability = (isbn, primaryIsbn) => {
-        const sanitizedIsbn = isbn.replace(/[^a-zA-Z0-9]/g, '');
-        fetch(`/api/googlebooks/checkAvailability?isbn=${sanitizedIsbn}`)
-            .then(response => response.json())
-            .then(isAvailable => {
-            if (isAvailable) {
-                const availabilityElement = document.querySelector(`#isbn-${primaryIsbn}`);
-                if (availabilityElement) {
-                    availabilityElement.textContent = 'Availability: Available';
-                }
-            }
-        })
-            .catch(error => console.error('Error checking availability:', error));
+    const checkBookAvailability = (isbns, primaryIsbn) => {
+        let availabilityChecks = isbns.map(isbn => {
+            const sanitizedIsbn = isbn.replace(/[^a-zA-Z0-9]/g, '');
+            return fetch(`/api/googlebooks/checkAvailability?isbn=${sanitizedIsbn}`)
+                .then(response => response.json())
+                .then(isAvailable => isAvailable)
+                .catch(error => {
+                console.error('Error checking availability:', error);
+                return false;
+            });
+        });
+
+        return Promise.all(availabilityChecks).then(results => results.includes(true));
     };
 
     const addPaginationControls = (totalItems, currentPage) => {
