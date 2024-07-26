@@ -29,6 +29,24 @@ public class ContactController {
         }
         return "contact";
     }
+
+    @GetMapping("/logged_in_contact")
+    public String showLoggedInContactPage() {
+        return "logged_in_contact";
+    }
+
+    @PostMapping("/logged_in_contact")
+    public String handleLoggedInContactForm(@RequestParam String name, @RequestParam String email, @RequestParam String message, Model model) {
+        String subject = "New message from " + name;
+        try {
+            emailService.sendEmail(email, subject, message);
+            model.addAttribute("successMessage", "Thank you for your message. We will get back to you soon.");
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "An error occurred while sending your message. Please try again later.");
+        }
+        return "logged_in_contact";
+    }
+
 }
 
 

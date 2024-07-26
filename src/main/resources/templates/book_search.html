@@ -9,10 +9,10 @@
   <!-- Link to Bootstrap CSS for responsive styling -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
 <!-- Navigation bar section using Bootstrap components -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <a class="navbar-brand" href="#">LibraryLink User</a>
+  <a class="navbar-brand" href="/user/dashboard">LibraryLink User</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -32,7 +32,7 @@
 </nav>
 
 <!-- Main content area -->
-<main role="main" class="container mt-5 pt-5"> <!-- Additional margin and padding to account for the fixed navbar -->
+<main role="main" class="container mt-5 flex-grow-1">
   <div class="row justify-content-center">
     <div class="col-md-8">
       <div class="card">
@@ -93,6 +93,23 @@
     </div>
   </div>
 </main>
+
+<!-- Footer -->
+<footer class="footer bg-dark text-white text-center py-3 mt-auto">
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <a class="text-white" href="/logged_in_contact">Contact</a>
+      </div>
+      <div class="col">
+        <a class="text-white" href="/logged_in_about">About</a>
+      </div>
+      <div class="col">
+        <a class="text-white" href="/logged_in_faq">FAQ</a>
+      </div>
+    </div>
+  </div>
+</footer>
 
 <!-- Scripts required for Bootstrap's JavaScript features such as the collapsible navbar -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

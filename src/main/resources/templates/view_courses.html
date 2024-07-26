@@ -8,7 +8,7 @@
 </head>
 <body class="d-flex flex-column min-vh-100">
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <a class="navbar-brand" href="#">LibraryLink User</a>
+  <a class="navbar-brand" href="/user/dashboard">LibraryLink User</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -27,7 +27,7 @@
   </div>
 </nav>
 
-<main role="main" class="container mt-5">
+<main role="main" class="container mt-5 flex-grow-1">
   <div class="jumbotron">
     <h1>Available Courses</h1>
     <table class="table table-striped">
@@ -76,6 +76,23 @@
     </form>
   </div>
 </main>
+
+<!-- Footer -->
+<footer class="footer bg-dark text-white text-center py-3 mt-auto">
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <a class="text-white" href="/logged_in_contact">Contact</a>
+      </div>
+      <div class="col">
+        <a class="text-white" href="/logged_in_about">About</a>
+      </div>
+      <div class="col">
+        <a class="text-white" href="/logged_in_faq">FAQ</a>
+      </div>
+    </div>
+  </div>
+</footer>
 
 <script>
   function toggleDescription(button) {
