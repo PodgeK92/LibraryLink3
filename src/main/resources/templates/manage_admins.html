@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Admins</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body class="d-flex flex-column min-vh-100">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="/admin/dashboard">LibraryLink Admin</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="/admin/dashboard">Dashboard</a>
+      </li>
+    </ul>
+    <!-- Sign Out Button -->
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="/logout">Sign Out</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<main role="main" class="container mt-5 flex-grow-1">
+  <div class="jumbotron">
+    <h1>Manage Admins</h1>
+    <button class="btn btn-primary mb-3" onclick="showAddAdminForm()">Add Admin</button>
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th>Username</th>
+        <th>Email</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Role</th>
+        <th>Enabled</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody id="adminsTableBody">
+      <!-- Admins will be populated here -->
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<!-- Add/Edit Admin Modal -->
+<div class="modal fade" id="adminModal" tabindex="-1" role="dialog" aria-labelledby="adminModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="adminModalLabel">Add/Edit Admin</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="adminForm">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" class="form-control" id="username" name="username" required readonly>
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" class="form-control" id="email" name="email" required>
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" class="form-control" id="password" name="password">
+          </div>
+          <div class="form-group">
+            <label for="firstName">First Name</label>
+            <input type="text" class="form-control" id="firstName" name="firstName" required>
+          </div>
+          <div class="form-group">
+            <label for="lastName">Last Name</label>
+            <input type="text" class="form-control" id="lastName" name="lastName" required>
+          </div>
+          <div class="form-group">
+            <label for="role">Role</label>
+            <input type="text" class="form-control" id="role" name="role" required>
+          </div>
+          <div class="form-group">
+            <label for="enabled">Enabled</label>
+            <select class="form-control" id="enabled" name="enabled" required>
+              <option value="true">Yes</option>
+              <option value="false">No</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="footer bg-dark text-white text-center py-3 mt-auto">
+  <div class="container">
+    <span>LibraryLink Admin</span>
+  </div>
+</footer>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    fetch('/admin/get_admins')
+      .then(response => response.json())
+      .then(data => {
+      const adminsTableBody = document.getElementById('adminsTableBody');
+      adminsTableBody.innerHTML = '';
+      data.forEach(admin => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${admin.username}</td>
+            <td>${admin.email}</td>
+            <td>${admin.firstName}</td>
+            <td>${admin.lastName}</td>
+            <td>${admin.role}</td>
+            <td>${admin.enabled}</td>
+            <td>
+              <button class="btn btn-warning btn-sm" onclick="showEditAdminForm('${admin.username}')">Edit</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteAdmin('${admin.username}')">Delete</button>
+            </td>
+          `;
+        adminsTableBody.appendChild(row);
+      });
+    });
+  });
+
+  function showAddAdminForm() {
+    document.getElementById('adminForm').reset();
+    document.getElementById('username').removeAttribute('readonly');
+    $('#adminModal').modal('show');
+  }
+
+  function showEditAdminForm(username) {
+    fetch(`/admin/get_admin?username=${username}`)
+      .then(response => response.json())
+      .then(admin => {
+      document.getElementById('username').value = admin.username;
+      document.getElementById('email').value = admin.email;
+      document.getElementById('password').value = admin.password;
+      document.getElementById('firstName').value = admin.firstName;
+      document.getElementById('lastName').value = admin.lastName;
+      document.getElementById('role').value = admin.role;
+      document.getElementById('enabled').value = admin.enabled;
+      document.getElementById('username').setAttribute('readonly', true);
+      $('#adminModal').modal('show');
+    });
+  }
+
+  function deleteAdmin(username) {
+    fetch(`/admin/delete_admin?username=${username}`, {
+      method: 'DELETE'
+    })
+      .then(response => response.json())
+      .then(data => {
+      if (data.success) {
+        location.reload();
+      } else {
+        alert(data.message);
+      }
+    });
+  }
+
+  document.getElementById('adminForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const formData = new FormData(this);
+    fetch('/admin/save_admin', {
+      method: 'POST',
+      body: JSON.stringify(Object.fromEntries(formData)),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+      if (data.success) {
+        $('#adminModal').modal('hide');
+        location.reload();
+      } else {
+        alert(data.message);
+      }
+    });
+  });
+</script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

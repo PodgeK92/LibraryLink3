@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LibraryLink - FAQ Page</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body class="d-flex flex-column min-vh-100">
+<!-- Navigation bar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="/user/dashboard">LibraryLink User</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="/user/dashboard">Dashboard</a>
+      </li>
+    </ul>
+    <!-- Sign Out Button -->
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="/logout">Sign Out</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+
+<!-- Page content -->
+<main role="main" class="container mt-5 pt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-body">
+          <h2 class="card-title mb-4">Frequently Asked Questions</h2>
+
+          <div class="accordion" id="faqAccordion">
+            <div class="card">
+              <div class="card-header" id="faqHeading1">
+                <h5 class="mb-0">
+                  <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#faq1" aria-expanded="true" aria-controls="faq1">
+                    How do I register for a LibraryLink account?
+                  </button>
+                </h5>
+              </div>
+              <div id="faq1" class="collapse show" aria-labelledby="faqHeading1" data-parent="#faqAccordion">
+                <div class="card-body">
+                  To register for a LibraryLink account, click on the "Sign Up" link in the navigation bar and follow the steps to create your account.
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header" id="faqHeading2">
+                <h5 class="mb-0">
+                  <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#faq2" aria-expanded="false" aria-controls="faq2">
+                    How can I search for books in the library?
+                  </button>
+                </h5>
+              </div>
+              <div id="faq2" class="collapse" aria-labelledby="faqHeading2" data-parent="#faqAccordion">
+                <div class="card-body">
+                  To search for books, click on the "Books" link in the navigation bar and enter your search criteria in the search form provided.
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header" id="faqHeading3">
+                <h5 class="mb-0">
+                  <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#faq3" aria-expanded="false" aria-controls="faq3">
+                    How do I contact the library for support?
+                  </button>
+                </h5>
+              </div>
+              <div id="faq3" class="collapse" aria-labelledby="faqHeading3" data-parent="#faqAccordion">
+                <div class="card-body">
+                  If you need support, you can contact the library by clicking on the "Contact" link in the navigation bar and filling out the contact form.
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Footer -->
+<footer class="footer bg-dark text-white text-center py-3 mt-auto">
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <a class="text-white" href="/logged_in_contact">Contact</a>
+      </div>
+      <div class="col">
+        <a class="text-white" href="/logged_in_about">About</a>
+      </div>
+      <div class="col">
+        <a class="text-white" href="/logged_in_faq">FAQ</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Bootstrap JavaScript dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
+

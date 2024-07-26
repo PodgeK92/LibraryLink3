@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Return Book</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body class="d-flex flex-column min-vh-100">
+<!-- Navigation bar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="/admin/dashboard">LibraryLink Admin</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="/admin/dashboard">Dashboard</a>
+      </li>
+    </ul>
+    <!-- Sign Out Button -->
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="/logout">Sign Out</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<main role="main" class="container mt-5">
+  <div class="jumbotron">
+    <h1>Return Book</h1>
+    <form id="userCardForm">
+      <div class="form-group">
+        <label for="cardNumberId">User Card Number ID</label>
+        <input type="text" class="form-control" id="cardNumberId" name="cardNumberId" placeholder="Enter User Card Number ID" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Search Loans</button>
+    </form>
+
+    <div id="loanList" style="display: none;">
+      <h2>Current Loans</h2>
+      <ul id="currentLoans" class="list-group"></ul>
+      <h2 class="mt-4">Returned Loans</h2>
+      <ul id="returnedLoans" class="list-group"></ul>
+    </div>
+  </div>
+</main>
+
+<!-- Footer -->
+<footer class="footer bg-dark text-white text-center py-3 mt-auto">
+  <div class="container">
+    <span>LibraryLink Admin</span>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('userCardForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const cardNumberId = document.getElementById('cardNumberId').value;
+    fetch(`/admin/user_loans?cardNumberId=${cardNumberId}`)
+      .then(response => response.json())
+      .then(loans => {
+      const loanList = document.getElementById('loanList');
+      const currentLoansUl = document.getElementById('currentLoans');
+      const returnedLoansUl = document.getElementById('returnedLoans');
+      currentLoansUl.innerHTML = '';
+      returnedLoansUl.innerHTML = '';
+
+      loans.forEach(loan => {
+        const li = document.createElement('li');
+        li.classList.add('list-group-item');
+        li.textContent = `Book: ${loan.book.title} (ISBN: ${loan.book.isbn}), Loan Date: ${loan.loanDate}, Due Date: ${loan.returnDate}`;
+
+        if (!loan.returnedOnDate) {
+          const button = document.createElement('button');
+          button.textContent = 'Return Book';
+          button.classList.add('btn', 'btn-secondary', 'ml-2');
+          button.onclick = function() {
+            fetch('/admin/return_book', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ bookLoanId: loan.bookLoanId })
+            })
+              .then(response => response.json())
+              .then(data => {
+              alert(data.message);
+              // Optionally, refresh the loan list
+              document.getElementById('userCardForm').dispatchEvent(new Event('submit'));
+            })
+              .catch(error => {
+              console.error('Error:', error);
+            });
+          };
+          li.appendChild(button);
+          currentLoansUl.appendChild(li);
+        } else {
+          li.textContent += `, Returned On: ${loan.returnedOnDate}`;
+          returnedLoansUl.appendChild(li);
+        }
+      });
+
+      loanList.style.display = 'block';
+    })
+      .catch(error => {
+      console.error('Error:', error);
+    });
+  });
+</script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

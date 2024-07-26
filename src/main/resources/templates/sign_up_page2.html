@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LibraryLink - Sign Up Step 2</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body class="d-flex flex-column min-vh-100">
+<!-- Navigation bar -->
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+  <a class="navbar-brand" href="/home">LibraryLink</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarCollapse">
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="/home">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/about">About</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/admin/login">Admin</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/user/login">Login</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/register">Sign Up</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<main role="main" class="container">
+  <div class="jumbotron">
+    <h1>Sign Up - Step 2</h1>
+    <form id="step2Form">
+      <div class="form-group">
+        <label for="streetName">Street Name</label>
+        <input type="text" class="form-control" id="streetName" name="streetName" placeholder="Enter your street name" required>
+      </div>
+      <div class="form-group">
+        <label for="townCity">Town/City</label>
+        <input type="text" class="form-control" id="townCity" name="townCity" placeholder="Enter your town/city" required>
+      </div>
+      <div class="form-group">
+        <label for="county">County</label>
+        <input type="text" class="form-control" id="county" name="county" placeholder="Enter your county" required>
+      </div>
+      <div class="form-group">
+        <label for="dob">Date of Birth</label>
+        <input type="date" class="form-control" id="dob" name="dob" required>
+      </div>
+      <div class="form-group">
+        <label for="phoneNumber">Phone Number</label>
+        <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="Enter your phone number" required>
+      </div>
+      <button type="button" class="btn btn-primary" onclick="nextStep()">Next</button>
+    </form>
+  </div>
+</main>
+
+<!-- Footer -->
+<footer class="footer bg-dark text-white text-center py-3 mt-auto">
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <a class="text-white" href="/contact">Contact</a>
+      </div>
+      <div class="col">
+        <a class="text-white" href="/about">About</a>
+      </div>
+      <div class="col">
+        <a class="text-white" href="/faq">FAQ</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  function nextStep() {
+    const form = document.getElementById('step2Form');
+    const formData = new FormData(form);
+    const data = {};
+    formData.forEach((value, key) => data[key] = value);
+
+    sessionStorage.setItem('step2Data', JSON.stringify(data));
+    window.location.href = "/register/step3";
+  }
+</script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
