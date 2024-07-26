@@ -10,5 +10,10 @@ public class FAQController {
     public String showFaqPage() {
         return "faq";
     }
+
+    @GetMapping("/logged_in_faq")
+    public String showLoggedInFaqPage() {
+        return "logged_in_faq";
+    }
 }
 
