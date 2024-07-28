@@ -25,11 +25,6 @@ pipeline {
                     artifacts: '**/LibraryLink3*.war'
             }
         }
-        stage('Test') {
-            steps {
-                sh 'echo Tests would be triggered from here'
-            }
-        }
         stage('Deploy') {
             steps {
                 sh 'docker build -f Dockerfile -t myapp . '
