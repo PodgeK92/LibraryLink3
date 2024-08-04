@@ -15,7 +15,7 @@ public class Book {
     private int yearPublished;
     private String genre;
     private String format;
-    private String status;
+    private String status = "Available";
 
     // No-argument constructor
     public Book() {
